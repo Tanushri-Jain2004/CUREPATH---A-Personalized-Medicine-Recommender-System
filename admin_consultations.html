@@ -1,0 +1,131 @@
+{% extends "admin_base.html" %}
+{% block title %}Consultations{% endblock %}
+{% block page_title %}Consultation Requests{% endblock %}
+
+{% block content %}
+<div class="a-card">
+  <div class="a-card-header">
+    <h3>👨‍⚕️ Consultations <span class="badge badge-gray" style="margin-left:8px;">{{ consultations|length }}</span></h3>
+    <form method="GET" style="display:flex;gap:10px;flex-wrap:wrap;">
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" name="q" value="{{ q }}" placeholder="Search patient, user…">
+      </div>
+      <select name="status" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--font-b);font-size:13px;outline:none;background:#faf9f6;">
+        <option value="">All Status</option>
+        <option {% if status_filter=='Pending' %}selected{% endif %}>Pending</option>
+        <option {% if status_filter=='Reviewed' %}selected{% endif %}>Reviewed</option>
+        <option {% if status_filter=='Replied' %}selected{% endif %}>Replied</option>
+      </select>
+      <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+      {% if q or status_filter %}<a href="/admin/consultations" class="btn btn-outline btn-sm">Clear</a>{% endif %}
+    </form>
+  </div>
+
+  <table class="a-table">
+    <thead>
+      <tr>
+        <th>#</th><th>Patient</th><th>User</th><th>Doctor Preferred</th><th>Symptoms</th><th>Report</th><th>Status</th><th>Date</th><th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in consultations %}
+      <tr id="row-{{ c.id }}">
+        <td style="color:var(--muted);font-size:12px;">{{ c.id }}</td>
+        <td>
+          <div style="font-weight:600;">{{ c.patient_name or '—' }}</div>
+          <div style="font-size:12px;color:var(--muted);">Age: {{ c.age or '—' }} · {{ c.gender or '—' }}</div>
+          {% if c.phone %}<div style="font-size:12px;color:var(--muted);">📞 {{ c.phone }}</div>{% endif %}
+        </td>
+        <td>
+          <a href="/admin/user_profile/{{ c.username }}" style="color:var(--t600);font-weight:600;text-decoration:none;">{{ c.username }}</a>
+        </td>
+        <td style="font-size:13px;">{{ c.doctor_pref or '—' }}</td>
+        <td style="max-width:180px;font-size:12.5px;color:var(--muted);">
+          {{ (c.symptoms or '')[:80] }}{% if c.symptoms and c.symptoms|length > 80 %}…{% endif %}
+        </td>
+        <td>
+          {% if c.report_file %}
+            <a href="/static/consultation_reports/{{ c.report_file }}" target="_blank" class="btn btn-outline btn-sm">
+              <svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+              View
+            </a>
+          {% else %}
+            <span style="font-size:12px;color:#b4b2a9;">None</span>
+          {% endif %}
+        </td>
+        <td>
+          <span class="badge {% if c.status=='Pending' %}badge-amber{% elif c.status=='Reviewed' %}badge-green{% else %}badge-blue{% endif %}">
+            {{ c.status }}
+          </span>
+        </td>
+        <td style="font-size:12px;color:var(--muted);">{{ c.submitted_at or '—' }}</td>
+        <td>
+          <div style="display:flex;flex-direction:column;gap:5px;">
+            <button class="btn btn-primary btn-sm" onclick="openReply({{ c.id }}, '{{ c.admin_reply|replace("'","\\'") if c.admin_reply else "" }}', '{{ c.status }}')">
+              <svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:#fff;fill:none;stroke-width:2;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              Reply
+            </button>
+            <form method="POST" action="/admin/consultations/delete/{{ c.id }}" onsubmit="return confirm('Delete this consultation?');">
+              <button type="submit" class="btn btn-danger btn-sm" style="width:100%;">Delete</button>
+            </form>
+          </div>
+        </td>
+      </tr>
+      {% if c.admin_reply %}
+      <tr style="background:#f0f9f5;">
+        <td></td>
+        <td colspan="8" style="font-size:13px;color:#085041;padding:8px 14px;">
+          <strong>Doctor's Reply:</strong> {{ c.admin_reply }}
+        </td>
+      </tr>
+      {% endif %}
+      {% else %}
+      <tr><td colspan="9" style="text-align:center;color:var(--muted);padding:32px;">No consultation requests yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Reply Modal -->
+<div class="modal-overlay" id="reply-modal" onclick="if(event.target===this)closeReply()">
+  <div class="modal" style="max-width:560px;">
+    <button class="modal-close" onclick="closeReply()">×</button>
+    <h3>💬 Reply to Consultation</h3>
+    <form method="POST" id="reply-form">
+      <div class="modal-field">
+        <label>Status</label>
+        <select name="status" style="width:100%;padding:10px 14px;border:1.5px solid #e8e6df;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;background:#faf9f6;appearance:none;" id="reply-status">
+          <option value="Pending">Pending</option>
+          <option value="Reviewed">Reviewed</option>
+          <option value="Replied">Replied</option>
+        </select>
+      </div>
+      <div class="modal-field">
+        <label>Doctor's Reply / Notes</label>
+        <textarea name="reply" id="reply-text" style="width:100%;min-height:140px;padding:12px 14px;border:1.5px solid #e8e6df;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;background:#faf9f6;resize:vertical;" placeholder="Write your response to the patient…"></textarea>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:16px;">
+        <button type="submit" class="btn btn-primary" style="flex:1;">
+          <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2;"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Send Reply
+        </button>
+        <button type="button" class="btn btn-outline" onclick="closeReply()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function openReply(id, existingReply, currentStatus) {
+  document.getElementById('reply-form').action = '/admin/consultations/reply/' + id;
+  document.getElementById('reply-text').value  = existingReply || '';
+  document.getElementById('reply-status').value = currentStatus || 'Reviewed';
+  document.getElementById('reply-modal').classList.add('open');
+}
+function closeReply() {
+  document.getElementById('reply-modal').classList.remove('open');
+}
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeReply(); });
+</script>
+{% endblock %}

@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--t50:#E1F5EE;--t100:#9FE1CB;--t400:#1D9E75;--t600:#0F6E56;--t800:#085041;--t900:#04342C;--font-d:'Playfair Display',serif;--font-b:'DM Sans',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;}
+body{font-family:var(--font-b);background:#f5f4ef;color:#2c2c2a;margin:0;}
+.page-wrap{max-width:860px;margin:0 auto;padding:48px 24px 80px;}
+
+/* ── Page header ── */
+.page-header{text-align:center;margin-bottom:48px;}
+.page-header h1{font-family:var(--font-d);font-size:clamp(26px,4vw,38px);font-weight:700;color:#04342C;margin-bottom:8px;}
+.page-header p{font-size:15px;color:#888780;}
+
+/* ── Blog card ── */
+.blog-card{background:#fff;border:1px solid #e8e6df;border-radius:18px;overflow:hidden;margin-bottom:36px;transition:transform 0.2s,box-shadow 0.2s;}
+.blog-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(4,52,44,0.09);}
+.blog-img{width:100%;height:260px;object-fit:cover;display:block;}
+.blog-body{padding:28px 32px 32px;}
+
+/* ── Tag ── */
+.blog-tag{display:inline-block;background:var(--t50);border:1px solid var(--t100);color:var(--t800);font-size:11px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:14px;}
+
+.blog-body h2{font-family:var(--font-d);font-size:22px;font-weight:600;color:#04342C;margin-bottom:12px;line-height:1.35;}
+.blog-body .lead{font-size:14.5px;color:#5f5e5a;line-height:1.75;margin-bottom:20px;}
+.divider-line{height:1px;background:#f0ede6;margin:20px 0;}
+
+/* ── Section heading ── */
+.sub-h{font-size:13px;font-weight:700;color:var(--t600);letter-spacing:0.04em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+
+/* ── List ── */
+.blog-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;}
+.blog-list li{display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:#3c3c3a;line-height:1.6;}
+.blog-list li::before{content:'';width:7px;height:7px;background:var(--t400);border-radius:50%;flex-shrink:0;margin-top:7px;}
+
+/* ── Two column list ── */
+.list-2col{display:grid;grid-template-columns:1fr 1fr;gap:8px 24px;}
+
+/* ── Tip box ── */
+.tip-box{background:var(--t50);border:1px solid var(--t100);border-radius:10px;padding:14px 18px;font-size:13.5px;color:var(--t800);margin-top:20px;line-height:1.6;}
+
+/* ── Fade ── */
+.fade-up{opacity:0;transform:translateY(20px);transition:opacity 0.55s ease,transform 0.55s ease;}
+.fade-up.visible{opacity:1;transform:translateY(0);}
+</style>
+
+<div class="page-wrap">
+
+  <div class="page-header fade-up">
+    <h1>Health Blog</h1>
+    <p>Insights on health, AI, and lifestyle — curated for you</p>
+  </div>
+
+  <!-- Blog 1 -->
+  <div class="blog-card fade-up">
+    <img src="https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=860&q=80" class="blog-img" alt="Early detection">
+    <div class="blog-body">
+      <span class="blog-tag">Prevention</span>
+      <h2>Importance of Early Disease Detection</h2>
+      <p class="lead">Early disease detection plays a crucial role in improving health outcomes and saving lives. Identifying diseases at an early stage allows timely treatment and prevents complications that are harder and costlier to manage later.</p>
+      <div class="divider-line"></div>
+      <div class="sub-h">🔍 Why It Matters</div>
+      <ul class="blog-list list-2col">
+        <li>Higher success rates in treatment</li>
+        <li>Lower medical expenses</li>
+        <li>Prevents severe complications</li>
+        <li>Improves quality of life</li>
+        <li>Reduces hospital stays</li>
+        <li>Better long-term prognosis</li>
+      </ul>
+      <div class="tip-box">💡 CurePath helps you identify possible diseases early using symptom-based AI predictions — all in seconds.</div>
+    </div>
+  </div>
+
+  <!-- Blog 2 -->
+  <div class="blog-card fade-up">
+    <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=860&q=80" class="blog-img" alt="AI in healthcare">
+    <div class="blog-body">
+      <span class="blog-tag">Technology</span>
+      <h2>Role of AI in Healthcare</h2>
+      <p class="lead">Artificial Intelligence is transforming healthcare by enabling faster and more accurate diagnosis. From symptom analysis to drug discovery, AI is reshaping how doctors and patients interact with medicine.</p>
+      <div class="divider-line"></div>
+      <div class="sub-h">🚀 Key Applications</div>
+      <ul class="blog-list list-2col">
+        <li>Disease prediction</li>
+        <li>Medical image analysis</li>
+        <li>Personalised treatment</li>
+        <li>Drug research</li>
+        <li>Remote patient monitoring</li>
+        <li>Clinical decision support</li>
+      </ul>
+      <div class="divider-line"></div>
+      <div class="sub-h">📊 Benefits</div>
+      <ul class="blog-list">
+        <li>Dramatically reduced human error in diagnosis</li>
+        <li>Faster results enabling quicker medical decisions</li>
+        <li>Better patient outcomes through personalisation</li>
+      </ul>
+      <div class="tip-box">💡 CurePath uses a machine learning model trained on real symptom-disease data to bring AI-powered healthcare to everyone.</div>
+    </div>
+  </div>
+
+  <!-- Blog 3 -->
+  <div class="blog-card fade-up">
+    <img src="https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=860&q=80" class="blog-img" alt="Healthy lifestyle">
+    <div class="blog-body">
+      <span class="blog-tag">Lifestyle</span>
+      <h2>Healthy Lifestyle Tips for a Disease-Free Life</h2>
+      <p class="lead">A healthy lifestyle is the foundation of long-term wellbeing. Simple, consistent daily habits can make a dramatic difference in how you feel and how resilient you are against disease.</p>
+      <div class="divider-line"></div>
+      <div class="sub-h">🍎 Balanced Diet</div>
+      <p style="font-size:13.5px;color:#3c3c3a;line-height:1.65;margin-bottom:16px;">Include a variety of fruits, vegetables, whole grains, and lean proteins. Limit processed food, sugar, and excessive salt. Hydrate well — aim for 2–3 litres of water daily.</p>
+      <div class="sub-h">🏃 Regular Exercise</div>
+      <p style="font-size:13.5px;color:#3c3c3a;line-height:1.65;margin-bottom:16px;">Stay active for at least 30 minutes daily. A mix of cardio, strength training, and stretching keeps your body and mind sharp.</p>
+      <div class="sub-h">😴 Quality Sleep</div>
+      <p style="font-size:13.5px;color:#3c3c3a;line-height:1.65;margin-bottom:16px;">Aim for 7–8 hours of uninterrupted sleep. Good sleep boosts immunity, mood, and cognitive performance.</p>
+      <div class="sub-h">🧘 Stress Management</div>
+      <p style="font-size:13.5px;color:#3c3c3a;line-height:1.65;margin-bottom:0;">Practice yoga, meditation, or deep breathing. Chronic stress is a silent driver of many diseases — managing it is as important as diet and exercise.</p>
+      <div class="tip-box">💡 Consistency in these habits leads to long-term health benefits. Small steps daily compound into a healthier you.</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const obs = new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:0.08});
+document.querySelectorAll('.fade-up').forEach(el=>obs.observe(el));
+</script>
+{% endblock %}

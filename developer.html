@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--t50:#E1F5EE;--t100:#9FE1CB;--t400:#1D9E75;--t600:#0F6E56;--t800:#085041;--t900:#04342C;--font-d:'Playfair Display',serif;--font-b:'DM Sans',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;}
+body{font-family:var(--font-b);background:#f5f4ef;color:#2c2c2a;margin:0;}
+.page-wrap{max-width:1100px;margin:0 auto;padding:48px 24px 80px;}
+
+/* ── Hero ── */
+.page-hero{text-align:center;margin-bottom:52px;}
+.page-hero h1{font-family:var(--font-d);font-size:clamp(26px,4vw,38px);font-weight:700;color:#04342C;margin-bottom:8px;}
+.page-hero p{font-size:15px;color:#888780;max-width:500px;margin:0 auto;}
+
+/* ── Doctor grid ── */
+.doc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px;margin-bottom:40px;}
+
+.doc-card{background:#fff;border:1px solid #e8e6df;border-radius:18px;overflow:hidden;transition:transform 0.2s,box-shadow 0.2s;}
+.doc-card:hover{transform:translateY(-6px);box-shadow:0 20px 48px rgba(4,52,44,0.1);}
+
+.doc-card-header{padding:24px 24px 20px;display:flex;align-items:flex-start;gap:16px;border-bottom:1px solid #f0ede6;}
+.doc-avatar{width:54px;height:54px;border-radius:14px;background:var(--t50);border:2px solid var(--t100);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;}
+.doc-info{flex:1;}
+.doc-name{font-family:var(--font-d);font-size:16px;font-weight:600;color:#04342C;margin-bottom:4px;}
+.doc-spec{font-size:12px;font-weight:700;color:var(--t600);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:6px;}
+.doc-meta{display:flex;gap:10px;flex-wrap:wrap;}
+.meta-pill{display:inline-flex;align-items:center;gap:4px;background:var(--t50);color:var(--t800);font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;}
+
+.doc-card-body{padding:20px 24px 24px;}
+.expertise-label{font-size:10.5px;font-weight:700;color:#b4b2a9;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;}
+.expertise-tags{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px;}
+.exp-tag{background:#faf9f6;border:1px solid #e8e6df;color:#3c3c3a;font-size:12px;padding:5px 11px;border-radius:20px;}
+
+.doc-detail{display:flex;align-items:center;gap:8px;font-size:13px;color:#5f5e5a;margin-bottom:8px;}
+.doc-detail svg{width:14px;height:14px;stroke:var(--t400);fill:none;stroke-width:2;flex-shrink:0;}
+
+.consult-btn{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;background:var(--t600);color:#fff;text-decoration:none;border:none;font-family:var(--font-b);font-size:13.5px;font-weight:600;padding:11px;border-radius:10px;cursor:pointer;transition:background 0.15s,transform 0.1s;margin-top:16px;}
+.consult-btn:hover{background:var(--t800);}
+.consult-btn:active{transform:scale(0.98);}
+.consult-btn svg{width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2;}
+
+/* ── Disclaimer ── */
+.disclaimer-box{background:#fff8e6;border:1px solid #FAC775;border-radius:12px;padding:16px 20px;text-align:center;font-size:13px;color:#854F0B;margin-top:8px;}
+
+/* ── Fade ── */
+.fade-up{opacity:0;transform:translateY(20px);transition:opacity 0.55s ease,transform 0.55s ease;}
+.fade-up.visible{opacity:1;transform:translateY(0);}
+</style>
+
+<div class="page-wrap">
+
+  <div class="page-hero fade-up">
+    <h1>Doctor Profiles</h1>
+    <p>Meet our consulting medical professionals supporting CurePath's health guidance</p>
+  </div>
+
+  <div class="doc-grid">
+
+    <!-- Doctor 1 -->
+    <div class="doc-card fade-up">
+      <div class="doc-card-header">
+        <div class="doc-avatar">👨‍⚕️</div>
+        <div class="doc-info">
+          <div class="doc-name">Dr. Amit Sharma</div>
+          <div class="doc-spec">General Physician</div>
+          <div class="doc-meta">
+            <span class="meta-pill">MBBS, MD</span>
+            <span class="meta-pill">10+ Yrs</span>
+          </div>
+        </div>
+      </div>
+      <div class="doc-card-body">
+        <div class="doc-detail"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> India</div>
+        <div class="expertise-label">Areas of Expertise</div>
+        <div class="expertise-tags">
+          <span class="exp-tag">General Diagnosis</span>
+          <span class="exp-tag">Preventive Care</span>
+          <span class="exp-tag">Patient Counselling</span>
+        </div>
+        <a href="/book_consultation" class="consult-btn">
+          <svg viewBox="0 0 24 24"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>
+          Book Consultation
+        </a>
+      </div>
+    </div>
+
+    <!-- Doctor 2 -->
+    <div class="doc-card fade-up">
+      <div class="doc-card-header">
+        <div class="doc-avatar">👩‍⚕️</div>
+        <div class="doc-info">
+          <div class="doc-name">Dr. Neha Verma</div>
+          <div class="doc-spec">Nutritionist</div>
+          <div class="doc-meta">
+            <span class="meta-pill">B.Sc, M.Sc</span>
+            <span class="meta-pill">8 Yrs</span>
+          </div>
+        </div>
+      </div>
+      <div class="doc-card-body">
+        <div class="doc-detail"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> India</div>
+        <div class="expertise-label">Areas of Expertise</div>
+        <div class="expertise-tags">
+          <span class="exp-tag">Diet Planning</span>
+          <span class="exp-tag">Weight Management</span>
+          <span class="exp-tag">Lifestyle Disorders</span>
+        </div>
+        <a href="/book_consultation" class="consult-btn">
+          <svg viewBox="0 0 24 24"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>
+          Book Consultation
+        </a>
+      </div>
+    </div>
+
+    <!-- Doctor 3 -->
+    <div class="doc-card fade-up">
+      <div class="doc-card-header">
+        <div class="doc-avatar">👨‍⚕️</div>
+        <div class="doc-info">
+          <div class="doc-name">Dr. Rohan Mehta</div>
+          <div class="doc-spec">Cardiologist</div>
+          <div class="doc-meta">
+            <span class="meta-pill">MBBS, DM</span>
+            <span class="meta-pill">12 Yrs</span>
+          </div>
+        </div>
+      </div>
+      <div class="doc-card-body">
+        <div class="doc-detail"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> India</div>
+        <div class="expertise-label">Areas of Expertise</div>
+        <div class="expertise-tags">
+          <span class="exp-tag">Heart Disease</span>
+          <span class="exp-tag">Hypertension</span>
+          <span class="exp-tag">Preventive Cardiology</span>
+        </div>
+        <a href="/book_consultation" class="consult-btn">
+          <svg viewBox="0 0 24 24"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>
+          Book Consultation
+        </a>
+      </div>
+    </div>
+
+    <!-- Doctor 4 -->
+    <div class="doc-card fade-up">
+      <div class="doc-card-header">
+        <div class="doc-avatar">👩‍⚕️</div>
+        <div class="doc-info">
+          <div class="doc-name">Dr. Pooja Singh</div>
+          <div class="doc-spec">Dermatologist</div>
+          <div class="doc-meta">
+            <span class="meta-pill">MBBS, MD</span>
+            <span class="meta-pill">7 Yrs</span>
+          </div>
+        </div>
+      </div>
+      <div class="doc-card-body">
+        <div class="doc-detail"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> India</div>
+        <div class="expertise-label">Areas of Expertise</div>
+        <div class="expertise-tags">
+          <span class="exp-tag">Skin Disorders</span>
+          <span class="exp-tag">Allergy Treatment</span>
+          <span class="exp-tag">Cosmetic Derm</span>
+        </div>
+        <a href="/book_consultation" class="consult-btn">
+          <svg viewBox="0 0 24 24"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>
+          Book Consultation
+        </a>
+      </div>
+    </div>
+
+    <!-- Doctor 5 -->
+    <div class="doc-card fade-up">
+      <div class="doc-card-header">
+        <div class="doc-avatar">👨‍⚕️</div>
+        <div class="doc-info">
+          <div class="doc-name">Dr. Arjun Patel</div>
+          <div class="doc-spec">Orthopedic Surgeon</div>
+          <div class="doc-meta">
+            <span class="meta-pill">MBBS, MS</span>
+            <span class="meta-pill">9 Yrs</span>
+          </div>
+        </div>
+      </div>
+      <div class="doc-card-body">
+        <div class="doc-detail"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> India</div>
+        <div class="expertise-label">Areas of Expertise</div>
+        <div class="expertise-tags">
+          <span class="exp-tag">Bone & Joint Care</span>
+          <span class="exp-tag">Sports Injuries</span>
+          <span class="exp-tag">Rehabilitation</span>
+        </div>
+        <a href="/book_consultation" class="consult-btn">
+          <svg viewBox="0 0 24 24"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>
+          Book Consultation
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="disclaimer-box fade-up">
+    ⚠️ Doctor profiles are for demonstration purposes only and do not represent real consultations. Always consult a licensed medical professional for health decisions.
+  </div>
+
+</div>
+
+<script>
+const obs = new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:0.08});
+document.querySelectorAll('.fade-up').forEach(el=>obs.observe(el));
+</script>
+{% endblock %}

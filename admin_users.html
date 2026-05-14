@@ -1,0 +1,84 @@
+{% extends "admin_base.html" %}
+{% block title %}Users{% endblock %}
+{% block page_title %}User Management{% endblock %}
+
+{% block content %}
+<div class="a-card">
+  <div class="a-card-header">
+    <h3>👤 All Users <span class="badge badge-gray" style="margin-left:8px;">{{ users|length }}</span></h3>
+    <form method="GET" class="filter-row" style="margin:0;">
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" name="q" value="{{ q }}" placeholder="Search by name or username…">
+      </div>
+      <button type="submit" class="btn btn-primary btn-sm">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Search
+      </button>
+      {% if q %}<a href="/admin/users" class="btn btn-outline btn-sm">Clear</a>{% endif %}
+    </form>
+  </div>
+
+  <table class="a-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Username</th>
+        <th>Age</th>
+        <th>Gender</th>
+        <th>Address</th>
+        <th>Searches</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td style="color:var(--muted);font-size:12px;">{{ u.id }}</td>
+        <td>
+          <div style="display:flex;align-items:center;gap:9px;">
+            <div style="width:30px;height:30px;border-radius:50%;background:var(--t50);border:1px solid var(--t100);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--t600);flex-shrink:0;">
+              {{ u.name[:2].upper() if u.name else u.username[:2].upper() }}
+            </div>
+            <span style="font-weight:600;">{{ u.name or '—' }}</span>
+          </div>
+        </td>
+        <td><code style="background:#f5f4ef;padding:2px 7px;border-radius:5px;font-size:12.5px;">{{ u.username }}</code></td>
+        <td>{{ u.age or '—' }}</td>
+        <td>
+          {% if u.gender %}
+            <span class="badge badge-blue">{{ u.gender }}</span>
+          {% else %}—{% endif %}
+        </td>
+        <td style="max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--muted);font-size:12.5px;">{{ u.address or '—' }}</td>
+        <td>
+          {% set cnt = counts.get(u.username, 0) %}
+          {% if cnt > 0 %}
+            <a href="/admin/user_profile/{{ u.username }}" class="badge badge-green" style="text-decoration:none;cursor:pointer;">{{ cnt }} searches</a>
+          {% else %}
+            <span class="badge badge-gray">0</span>
+          {% endif %}
+        </td>
+        <td>
+          <div style="display:flex;gap:6px;">
+            <a href="/admin/user_profile/{{ u.username }}" class="btn btn-outline btn-sm">
+              <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              Profile
+            </a>
+            <form method="POST" action="/admin/users/delete/{{ u.id }}" onsubmit="return confirm('Delete user {{ u.username }} and all their data?');" style="display:inline;">
+              <button type="submit" class="btn btn-danger btn-sm">
+                <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+                Delete
+              </button>
+            </form>
+          </div>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="8" style="text-align:center;color:var(--muted);padding:32px;">No users found{% if q %} matching "{{ q }}"{% endif %}.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
