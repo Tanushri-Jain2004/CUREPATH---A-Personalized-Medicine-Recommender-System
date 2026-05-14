@@ -1,0 +1,127 @@
+Disease,Medicine,Dosage_mg
+Acne,Benzoyl Peroxide,topical
+Acne,Clindamycin,1%
+Acne,Adapalene,0.1%
+AIDS,Tenofovir,300
+AIDS,Lamivudine,300
+AIDS,Dolutegravir,50
+Alcoholic hepatitis,Prednisolone,40
+Alcoholic hepatitis,Pentoxifylline,400
+Alcoholic hepatitis,Thiamine (Vitamin B1),100
+Allergy,Cetirizine,10
+Allergy,Loratadine,10
+Allergy,Montelukast,10
+Arthritis,Ibuprofen,400
+Arthritis,Naproxen,250
+Arthritis,Methotrexate,7.5
+Bronchial Asthma,Salbutamol,100
+Bronchial Asthma,Dexamethasone,200
+Bronchial Asthma,Theophylline,200
+Cervical Spondylosis,Ibuprofen,400
+Cervical Spondylosis,Tizanidine,2
+Cervical Spondylosis,Calcium Supplement,500
+Chicken pox,Acyclovir,800
+Chicken pox,Paracetamol,500
+Chicken pox,Calamine Lotion,topical
+Chronic Cholestasis,Cholestyramine,4
+Chronic Cholestasis,Ursodeoxycholic Acid,300
+Chronic Cholestasis,Vitamin K,10
+Common Cold,Paracetamol,500
+Common Cold,Chlorpheniramine,4
+Common Cold,Vitamin C,500
+Dengue,Paracetamol,500
+Dengue,ORS,1 sachet
+Dengue,Vitamin C,500
+Diabetes,Metformin,500
+Diabetes,Glimepiride,2
+Diabetes,Insulin,as prescribed
+Dimorphic hemmorhoids(piles),Hydrocortisone Cream,topical
+Dimorphic hemmorhoids(piles),Diosmin,500
+Dimorphic hemmorhoids(piles),Stool Softener,as needed
+Drug Reaction,Antihistamine,10
+Drug Reaction,Corticosteroids,as prescribed
+Drug Reaction,Epinephrine,0.3 mg
+Fungal infection,Clotrimazole,topical
+Fungal infection,Fluconazole,150
+Fungal infection,Terbinafine,250
+Gastroenteritis,ORS,1 sachet
+Gastroenteritis,Metronidazole,400
+Gastroenteritis,Probiotics,1 capsule
+GERD,Omeprazole,20
+GERD,Ranitidine,150
+GERD,Antacids,as needed
+Heart Attack,Aspirin,325
+Heart Attack,Clopidogrel,75
+Heart Attack,Atorvastatin,40
+Hepatitis,Tenofovir,300
+Hepatitis,Entecavir,0.5
+Hepatitis,Interferon Alfa,10
+Hepatitis A,Paracetamol,500
+Hepatitis A,ORS,1 sachet
+Hepatitis A,Vitamin B Complex,1 tablet
+Hepatitis B,Tenofovir,300
+Hepatitis B,Entecavir,0.5
+Hepatitis B,Interferon alfa-2b,10
+Hepatitis C,Sofosbuvir,400
+Hepatitis C,Daclatasvir,60
+Hepatitis C,Ledipasvir + Sofosbuvir,90/400
+Hepatitis D,Interferon alfa,10
+Hepatitis D,Tenofovir,300
+Hepatitis D,Entecavir,0.5
+Hepatitis E,Paracetamol,500
+Hepatitis E,ORS,1 sachet
+Hepatitis E,Vitamin C,500
+Hypertension,Amlodipine,5
+Hypertension,Losartan,50
+Hypertension,Hydrochlorothiazide,25
+Hyperthyroidism,Carbimazole,10
+Hyperthyroidism,Propranolol,40
+Hyperthyroidism,Radioiodine Therapy,session based
+Hypoglycemia,Glucose Tablets,15 g
+Hypoglycemia,Dextrose Injection,25 ml IV
+Hypoglycemia,Glucagon Injection,1 mg
+Hypothyroidism,Levothyroxine,50
+Hypothyroidism,Iodine Supplement,as prescribed
+Hypothyroidism,Vitamin D,1000
+Impetigo,Mupirocin,topical
+Impetigo,Cephalexin,500
+Impetigo,Amoxicillin,500
+Jaundice,Ursodeoxycholic Acid,300
+Jaundice,Lactulose,15
+Jaundice,Vitamin B Complex,1 tablet
+Malaria,Chloroquine,500
+Malaria,Artemether,80
+Malaria,Lumefantrine,480
+Migraine,Sumatriptan,50
+Migraine,Naproxen,250
+Migraine,Paracetamol,500
+Osteoarthristis,Paracetamol,500
+Osteoarthristis,Diclofenac,50
+Osteoarthristis,Glucosamine,1500
+Paralysis (Brain Hemorrhage),Mannitol,100 ml IV
+Paralysis (Brain Hemorrhage),Anticoagulants,as prescribed
+Paralysis (Brain Hemorrhage),Physiotherapy,session based
+Peptic ulcer diseae,Omeprazole,20
+Peptic ulcer diseae,Amoxicillin,500
+Peptic ulcer diseae,Clarithromycin,500
+Pneumonia,Azithromycin,500
+Pneumonia,Amoxicillin,500
+Pneumonia,Paracetamol,500
+Psoriasis,Calcipotriol,topical
+Psoriasis,Methotrexate,7.5
+Psoriasis,Coal Tar,topical
+Tuberculosis,Isoniazid,300
+Tuberculosis,Rifampicin,600
+Tuberculosis,Ethambutol,800
+Typhoid,Ciprofloxacin,500
+Typhoid,Azithromycin,500
+Typhoid,Paracetamol,500
+Urinary Tract Infection,Nitrofurantoin,100
+Urinary Tract Infection,Ciprofloxacin,500
+Urinary Tract Infection,Trimethoprim,160
+Varicose Veins,Compression Stockings,1 pair
+Varicose Veins,Diosmin,500
+Varicose Veins,Heparin Gel,topical
+(vertigo) Paroymsal  Positional Vertigo,Betahistine,16
+(vertigo) Paroymsal  Positional Vertigo,Meclizine,25
+(vertigo) Paroymsal  Positional Vertigo,Prochlorperazine,5
