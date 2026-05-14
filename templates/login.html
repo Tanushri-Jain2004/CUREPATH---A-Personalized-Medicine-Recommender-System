@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --teal-50: #E1F5EE; --teal-100: #9FE1CB;
+  --teal-400: #1D9E75; --teal-600: #0F6E56;
+  --teal-800: #085041; --teal-900: #04342C;
+  --font-display: 'Playfair Display', serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+body { font-family: var(--font-body); background: #f5f4ef; min-height: 100vh; }
+
+/* ── Page layout ── */
+.auth-page {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  padding: 40px 16px;
+  background: #f5f4ef;
+}
+
+/* ── Card ── */
+.auth-card {
+  background: #fff;
+  border: 1px solid #e8e6df;
+  border-radius: 18px;
+  width: 100%; max-width: 420px;
+  overflow: hidden;
+}
+
+.auth-card-header {
+  background: var(--teal-900);
+  padding: 32px 36px 28px;
+  position: relative;
+  overflow: hidden;
+}
+.auth-card-header::before {
+  content: '';
+  position: absolute; top: -50px; right: -50px;
+  width: 160px; height: 160px;
+  background: rgba(29,158,117,0.18);
+  border-radius: 50%;
+}
+.auth-card-header::after {
+  content: '';
+  position: absolute; bottom: -30px; left: 30px;
+  width: 90px; height: 90px;
+  background: rgba(29,158,117,0.1);
+  border-radius: 50%;
+}
+
+.auth-icon {
+  width: 52px; height: 52px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 16px;
+  position: relative; z-index: 1;
+}
+.auth-icon svg { width: 26px; height: 26px; stroke: #fff; fill: none; stroke-width: 1.8; }
+
+.auth-card-header h2 {
+  font-family: var(--font-display);
+  font-size: 26px; font-weight: 600; color: #fff;
+  margin-bottom: 4px;
+  position: relative; z-index: 1;
+}
+.auth-card-header p {
+  font-size: 13px; color: rgba(255,255,255,0.6);
+  position: relative; z-index: 1;
+}
+
+/* ── Form body ── */
+.auth-card-body { padding: 32px 36px; }
+
+.alert-error {
+  background: #fff0f0; border: 1px solid #f09595;
+  color: #a32d2d; border-radius: 8px;
+  padding: 10px 14px; font-size: 13px; margin-bottom: 20px;
+}
+
+.field { margin-bottom: 18px; }
+.field label {
+  display: block; font-size: 12px; font-weight: 600;
+  color: #5f5e5a; letter-spacing: 0.05em; text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.field input {
+  width: 100%; padding: 11px 14px;
+  border: 1.5px solid #e8e6df;
+  border-radius: 9px; font-family: var(--font-body);
+  font-size: 14px; color: #2c2c2a;
+  outline: none; transition: border-color 0.2s;
+  background: #faf9f6;
+}
+.field input:focus { border-color: var(--teal-400); background: #fff; }
+.field input::placeholder { color: #b4b2a9; }
+
+.submit-btn {
+  width: 100%; padding: 13px;
+  background: var(--teal-600); color: #fff;
+  border: none; border-radius: 10px;
+  font-family: var(--font-body); font-size: 15px; font-weight: 600;
+  cursor: pointer; transition: background 0.2s, transform 0.1s;
+  margin-top: 4px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.submit-btn:hover { background: var(--teal-800); }
+.submit-btn:active { transform: scale(0.98); }
+.submit-btn svg { width: 16px; height: 16px; stroke: #fff; fill: none; stroke-width: 2.2; }
+
+.auth-footer {
+  text-align: center; margin-top: 22px;
+  font-size: 13.5px; color: #888780;
+}
+.auth-footer a { color: var(--teal-600); text-decoration: none; font-weight: 600; }
+.auth-footer a:hover { text-decoration: underline; }
+</style>
+
+<div class="auth-page">
+  <div class="auth-card">
+
+    <div class="auth-card-header">
+      <div class="auth-icon">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <h2>Welcome back</h2>
+      <p>Sign in to your CurePath account</p>
+    </div>
+
+    <div class="auth-card-body">
+      {% if error %}
+        <div class="alert-error">{{ error }}</div>
+      {% endif %}
+
+      <form method="POST">
+        <div class="field">
+          <label>Username</label>
+          <input type="text" name="username" placeholder="Enter your username" required autocomplete="username">
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input type="password" name="password" placeholder="Enter your password" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="submit-btn">
+          <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          Login
+        </button>
+      </form>
+
+      <p class="auth-footer">
+        Don't have an account? <a href="/signup">Create one</a>
+      </p>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

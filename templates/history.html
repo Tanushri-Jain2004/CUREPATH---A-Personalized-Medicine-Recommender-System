@@ -1,0 +1,343 @@
+{% extends "base.html" %}
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --t50:#E1F5EE;--t100:#9FE1CB;--t400:#1D9E75;
+  --t600:#0F6E56;--t800:#085041;--t900:#04342C;
+  --font-d:'Playfair Display',serif;--font-b:'DM Sans',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font-b);background:#f5f4ef;color:#2c2c2a;}
+.page-wrap{max-width:900px;margin:0 auto;padding:40px 24px 80px;}
+
+/* ── Page header ── */
+.page-hero{margin-bottom:36px;}
+.page-hero h1{font-family:var(--font-d);font-size:clamp(24px,3.5vw,34px);font-weight:700;color:#04342C;margin-bottom:6px;}
+.page-hero p{font-size:14px;color:#888780;}
+
+/* ── Stats row ── */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:32px;}
+.stat-card{background:#fff;border:1px solid #e8e6df;border-radius:12px;padding:18px 20px;text-align:center;}
+.stat-card .num{font-family:var(--font-d);font-size:28px;font-weight:700;color:#04342C;line-height:1;}
+.stat-card .lbl{font-size:12px;color:#888780;font-weight:500;margin-top:4px;letter-spacing:0.04em;}
+
+/* ── Filter bar ── */
+.filter-bar{display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
+.filter-bar input{
+  flex:1;min-width:200px;padding:9px 14px;
+  border:1.5px solid #e8e6df;border-radius:9px;
+  font-family:var(--font-b);font-size:13.5px;color:#2c2c2a;
+  outline:none;background:#fff;transition:border-color 0.2s;
+}
+.filter-bar input:focus{border-color:var(--t400);}
+.filter-bar input::placeholder{color:#b4b2a9;}
+.filter-select{
+  padding:9px 14px;border:1.5px solid #e8e6df;border-radius:9px;
+  font-family:var(--font-b);font-size:13px;color:#2c2c2a;
+  outline:none;background:#fff;cursor:pointer;
+  transition:border-color 0.2s;
+}
+.filter-select:focus{border-color:var(--t400);}
+.clear-btn{
+  padding:9px 16px;background:transparent;
+  border:1.5px solid #e8e6df;border-radius:9px;
+  font-family:var(--font-b);font-size:13px;color:#888780;
+  cursor:pointer;transition:background 0.15s,color 0.15s,border-color 0.15s;
+  white-space:nowrap;
+}
+.clear-btn:hover{background:#fff0f0;border-color:#f09595;color:#a32d2d;}
+
+/* ── History list ── */
+.history-list{display:flex;flex-direction:column;gap:12px;}
+
+.h-card{
+  background:#fff;border:1px solid #e8e6df;border-radius:14px;
+  overflow:hidden;transition:transform 0.2s,box-shadow 0.2s;
+  animation:cardIn 0.35s ease both;
+}
+.h-card:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(4,52,44,0.08);}
+@keyframes cardIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+.h-card-header{
+  display:flex;align-items:center;gap:14px;
+  padding:16px 20px;cursor:pointer;
+  border-bottom:1px solid transparent;
+  transition:background 0.15s;
+}
+.h-card.expanded .h-card-header{
+  border-bottom-color:#e8e6df;background:#faf9f6;
+}
+.h-card-header:hover{background:#faf9f6;}
+
+.h-num{
+  width:32px;height:32px;border-radius:50%;
+  background:var(--t50);border:1.5px solid var(--t100);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;color:var(--t600);flex-shrink:0;
+}
+
+.h-info{flex:1;min-width:0;}
+.h-disease{
+  font-family:var(--font-d);font-size:15px;font-weight:600;
+  color:#04342C;margin-bottom:3px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.h-symptoms{font-size:12px;color:#888780;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+.h-right{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+
+.conf-badge{
+  font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;
+}
+.conf-badge.high{background:#E1F5EE;color:var(--t600);}
+.conf-badge.mid {background:#FFF3CD;color:#856404;}
+.conf-badge.low {background:#FFE4E4;color:#a32d2d;}
+
+.h-arrow{
+  width:20px;height:20px;stroke:#b4b2a9;fill:none;stroke-width:2;
+  transition:transform 0.25s;flex-shrink:0;
+}
+.h-card.expanded .h-arrow{transform:rotate(180deg);}
+
+/* ── Expanded detail ── */
+.h-detail{
+  display:none;padding:18px 20px 20px;
+  animation:detailIn 0.25s ease;
+}
+.h-card.expanded .h-detail{display:block;}
+@keyframes detailIn{from{opacity:0;}to{opacity:1;}}
+
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:550px){.detail-grid{grid-template-columns:1fr;}}
+
+.detail-section h4{
+  font-size:11px;font-weight:700;color:#b4b2a9;
+  letter-spacing:0.09em;text-transform:uppercase;
+  margin-bottom:8px;
+}
+.detail-section ul{list-style:none;display:flex;flex-direction:column;gap:5px;}
+.detail-section ul li{
+  display:flex;align-items:flex-start;gap:8px;
+  font-size:13px;color:#3c3c3a;line-height:1.5;
+}
+.dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:6px;}
+.dot.g{background:var(--t400);}
+.dot.b{background:#378ADD;}
+.dot.o{background:#EF9F27);}
+
+.conf-bar-wrap{margin-bottom:16px;}
+.conf-bar-wrap .lbl{font-size:12px;color:#888780;font-weight:500;margin-bottom:5px;}
+.conf-bar-track{height:7px;background:#e8e6df;border-radius:10px;overflow:hidden;}
+.conf-bar-fill{height:100%;border-radius:10px;transition:width 0.6s ease;}
+
+.syms-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;}
+.sym-chip{
+  display:inline-block;background:var(--t50);border:1px solid var(--t100);
+  color:var(--t800);font-size:11.5px;font-weight:500;
+  padding:3px 10px;border-radius:20px;
+}
+
+.repredict-btn{
+  display:inline-flex;align-items:center;gap:7px;
+  background:var(--t600);color:#fff;text-decoration:none;
+  font-family:var(--font-b);font-size:13px;font-weight:600;
+  padding:9px 18px;border-radius:8px;border:none;cursor:pointer;
+  transition:background 0.15s;margin-top:4px;
+}
+.repredict-btn:hover{background:var(--t800);}
+.repredict-btn svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2;}
+
+/* ── Empty state ── */
+.empty-state{
+  text-align:center;padding:60px 24px;
+  background:#fff;border:1px solid #e8e6df;border-radius:16px;
+}
+.empty-state .icon{font-size:48px;margin-bottom:16px;}
+.empty-state h2{font-family:var(--font-d);font-size:22px;color:#04342C;margin-bottom:8px;}
+.empty-state p{font-size:14px;color:#888780;margin-bottom:24px;}
+.go-home{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--t600);color:#fff;text-decoration:none;
+  font-family:var(--font-b);font-size:14px;font-weight:600;
+  padding:11px 22px;border-radius:10px;
+  transition:background 0.15s;
+}
+.go-home:hover{background:var(--t800);}
+.go-home svg{width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2;}
+
+/* ── No results ── */
+.no-results{
+  text-align:center;padding:32px;color:#b4b2a9;
+  font-size:14px;background:#fff;border:1px solid #e8e6df;
+  border-radius:12px;display:none;
+}
+
+
+</style>
+
+<div class="page-wrap">
+
+  <!-- Header -->
+  <div class="page-hero">
+    <h1>Search History</h1>
+    <p>All your past symptom searches and predictions — <strong>{{ history|length }}</strong> total</p>
+  </div>
+
+  {% if history %}
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="num">{{ history|length }}</div>
+      <div class="lbl">Total Searches</div>
+    </div>
+    <div class="stat-card">
+      <div class="num">{{ history|selectattr("confidence","ge",70)|list|length }}</div>
+      <div class="lbl">High Confidence</div>
+    </div>
+    <div class="stat-card">
+      <div class="num">{{ history|map(attribute="prediction")|unique|list|length }}</div>
+      <div class="lbl">Unique Conditions</div>
+    </div>
+    <div class="stat-card">
+      <div class="num">
+        {% if history %}
+          {{ (history|map(attribute="confidence")|sum / history|length)|round(1) }}%
+        {% else %}0%{% endif %}
+      </div>
+      <div class="lbl">Avg Confidence</div>
+    </div>
+  </div>
+
+  <!-- Filter bar -->
+  <div class="filter-bar">
+    <input type="text" id="filter-input" placeholder="Search by disease or symptom…" oninput="filterHistory()">
+    <select class="filter-select" id="filter-conf" onchange="filterHistory()">
+      <option value="all">All confidence</option>
+      <option value="high">High (≥70%)</option>
+      <option value="mid">Medium (40–69%)</option>
+      <option value="low">Low (&lt;40%)</option>
+    </select>
+  </div>
+
+  <!-- No results msg -->
+  <div class="no-results" id="no-results">No records match your search.</div>
+
+  <!-- History list -->
+  <div class="history-list" id="history-list">
+    {% for h in history|reverse %}
+    <div class="h-card"
+         id="hcard-{{ h.id }}"
+         data-disease="{{ h.prediction|lower }}"
+         data-symptoms="{{ h.symptoms|lower }}"
+         data-conf="{{ h.confidence }}">
+
+      <div class="h-card-header" onclick="toggleCard({{ h.id }})">
+
+        <div class="h-num">{{ loop.index }}</div>
+
+        <div class="h-info">
+          <div class="h-disease">{{ h.prediction }}</div>
+          <div class="h-symptoms">{{ h.symptoms }}</div>
+        </div>
+
+        <div class="h-right">
+          <span class="conf-badge {% if h.confidence >= 70 %}high{% elif h.confidence >= 40 %}mid{% else %}low{% endif %}">
+            {{ h.confidence }}%
+          </span>
+          <svg class="h-arrow" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+
+      </div>
+
+      <!-- Expanded detail -->
+      <div class="h-detail">
+
+        <!-- Confidence bar -->
+        <div class="conf-bar-wrap">
+          <div class="lbl">Confidence Score</div>
+          <div class="conf-bar-track">
+            <div class="conf-bar-fill"
+                 style="width:{{ h.confidence }}%;
+                        background:{% if h.confidence >= 70 %}#1D9E75{% elif h.confidence >= 40 %}#EF9F27{% else %}#E24B4A{% endif %};">
+            </div>
+          </div>
+        </div>
+
+        <!-- Symptom chips -->
+        <div class="syms-chips">
+          {% for s in h.symptoms.split(',') %}
+            <span class="sym-chip">{{ s.strip().replace('_',' ').title() }}</span>
+          {% endfor %}
+        </div>
+
+        <!-- Re-predict button -->
+        <form method="POST" action="/predict" style="display:inline;">
+          {% for s in h.symptoms.split(',') %}
+            <input type="hidden" name="symptoms" value="{{ s.strip() }}">
+          {% endfor %}
+          <button type="submit" class="repredict-btn">
+            <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            Re-analyse These Symptoms
+          </button>
+        </form>
+
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% else %}
+
+  <!-- Empty state -->
+  <div class="empty-state">
+    <div class="icon">🔍</div>
+    <h2>No History Yet</h2>
+    <p>You haven't made any symptom searches yet.<br>Start by selecting your symptoms on the home page.</p>
+    <a href="/" class="go-home">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Go to Home
+    </a>
+  </div>
+
+  {% endif %}
+
+</div>
+
+<script>
+function toggleCard(id) {
+  const card = document.getElementById('hcard-' + id);
+  card.classList.toggle('expanded');
+}
+
+function filterHistory() {
+  const q    = document.getElementById('filter-input').value.toLowerCase().trim();
+  const conf = document.getElementById('filter-conf').value;
+  const cards = document.querySelectorAll('.h-card');
+  let visible = 0;
+
+  cards.forEach(card => {
+    const disease  = card.dataset.disease  || '';
+    const symptoms = card.dataset.symptoms || '';
+    const pct      = parseFloat(card.dataset.conf) || 0;
+
+    const matchText = !q || disease.includes(q) || symptoms.includes(q);
+    const matchConf =
+      conf === 'all' ||
+      (conf === 'high' && pct >= 70) ||
+      (conf === 'mid'  && pct >= 40 && pct < 70) ||
+      (conf === 'low'  && pct < 40);
+
+    const show = matchText && matchConf;
+    card.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+
+  document.getElementById('no-results').style.display = visible === 0 ? 'block' : 'none';
+}
+
+    });
+}
+</script>
+{% endblock %}

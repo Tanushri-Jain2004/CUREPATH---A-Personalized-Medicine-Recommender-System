@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--t50:#E1F5EE;--t100:#9FE1CB;--t400:#1D9E75;--t600:#0F6E56;--t800:#085041;--t900:#04342C;--font-d:'Playfair Display',serif;--font-b:'DM Sans',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;}
+body{font-family:var(--font-b);background:#f5f4ef;color:#2c2c2a;margin:0;}
+.page-wrap{max-width:760px;margin:0 auto;padding:48px 24px 80px;}
+
+/* ── Hero ── */
+.page-hero{text-align:center;margin-bottom:52px;}
+.page-hero h1{font-family:var(--font-d);font-size:clamp(26px,4vw,38px);font-weight:700;color:#04342C;margin-bottom:8px;}
+.page-hero p{font-size:15px;color:#888780;}
+.progress-track{height:5px;background:linear-gradient(90deg,var(--t400),var(--t100));border-radius:5px;width:120px;margin:16px auto 0;}
+
+/* ── Timeline ── */
+.timeline{position:relative;padding-left:48px;}
+.timeline::before{content:'';position:absolute;left:16px;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--t400) 0%,var(--t100) 100%);border-radius:3px;}
+
+.tl-step{position:relative;margin-bottom:32px;opacity:0;transform:translateX(-20px);transition:opacity 0.6s ease,transform 0.6s ease;}
+.tl-step.visible{opacity:1;transform:translateX(0);}
+
+.tl-dot{position:absolute;left:-40px;top:18px;width:32px;height:32px;background:var(--t600);border-radius:50%;display:flex;align-items:center;justify-content:center;border:3px solid #f5f4ef;box-shadow:0 0 0 3px var(--t100);}
+.tl-dot span{font-size:12px;font-weight:700;color:#fff;}
+
+.tl-card{background:#fff;border:1px solid #e8e6df;border-radius:14px;padding:22px 26px;transition:transform 0.2s,box-shadow 0.2s;}
+.tl-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(4,52,44,0.08);}
+.tl-card.danger{border-color:#f09595;background:#fff8f8;}
+.tl-card.danger .tl-title{color:#a32d2d;}
+
+.tl-icon{font-size:22px;margin-bottom:10px;display:block;}
+.tl-title{font-family:var(--font-d);font-size:17px;font-weight:600;color:#04342C;margin-bottom:8px;}
+.tl-text{font-size:13.5px;color:#5f5e5a;line-height:1.7;margin:0;}
+
+/* ── Tip chips ── */
+.tip-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+.tip-chip{background:var(--t50);border:1px solid var(--t100);color:var(--t800);font-size:12px;font-weight:500;padding:5px 12px;border-radius:20px;}
+
+/* ── FAQ ── */
+.faq-section{margin-top:48px;}
+.faq-section h2{font-family:var(--font-d);font-size:22px;font-weight:600;color:#04342C;margin-bottom:24px;text-align:center;}
+.faq-item{background:#fff;border:1px solid #e8e6df;border-radius:12px;margin-bottom:10px;overflow:hidden;}
+.faq-q{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;font-size:14px;font-weight:600;color:#2c2c2a;user-select:none;}
+.faq-q:hover{background:var(--t50);}
+.faq-q .arrow{width:18px;height:18px;stroke:var(--t600);fill:none;stroke-width:2;transition:transform 0.25s;flex-shrink:0;}
+.faq-item.open .faq-q .arrow{transform:rotate(180deg);}
+.faq-a{max-height:0;overflow:hidden;transition:max-height 0.35s ease,padding 0.35s ease;font-size:13.5px;color:#5f5e5a;line-height:1.7;padding:0 20px;}
+.faq-item.open .faq-a{max-height:200px;padding:0 20px 18px;}
+
+/* ── Hero fade ── */
+.fade-up{opacity:0;transform:translateY(20px);transition:opacity 0.55s ease,transform 0.55s ease;}
+.fade-up.visible{opacity:1;transform:translateY(0);}
+</style>
+
+<div class="page-wrap">
+
+  <div class="page-hero fade-up">
+    <h1>How to Use CurePath</h1>
+    <p>Follow these simple steps to get AI-powered health guidance</p>
+    <div class="progress-track"></div>
+  </div>
+
+  <div class="timeline">
+
+    <div class="tl-step">
+      <div class="tl-dot"><span>1</span></div>
+      <div class="tl-card">
+        <span class="tl-icon">🔐</span>
+        <div class="tl-title">Create an Account or Login</div>
+        <p class="tl-text">Sign up with your name, age, gender and contact details. Your data is securely stored and used to personalise your experience.</p>
+      </div>
+    </div>
+
+    <div class="tl-step">
+      <div class="tl-dot"><span>2</span></div>
+      <div class="tl-card">
+        <span class="tl-icon">🩺</span>
+        <div class="tl-title">Describe Your Symptoms</div>
+        <p class="tl-text">Type your symptoms in the chat box or use the voice mic button. The autocomplete feature helps you find exact symptom names quickly.</p>
+        <div class="tip-chips">
+          <span class="tip-chip">e.g. fever and chills</span>
+          <span class="tip-chip">dry cough, fatigue</span>
+          <span class="tip-chip">headache and nausea</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-step">
+      <div class="tl-dot"><span>3</span></div>
+      <div class="tl-card">
+        <span class="tl-icon">⚡</span>
+        <div class="tl-title">Get an Instant Prediction</div>
+        <p class="tl-text">Our machine learning model analyses your symptoms and instantly predicts the most probable disease with a confidence score.</p>
+      </div>
+    </div>
+
+    <div class="tl-step">
+      <div class="tl-dot"><span>4</span></div>
+      <div class="tl-card">
+        <span class="tl-icon">📊</span>
+        <div class="tl-title">Review Detailed Results</div>
+        <p class="tl-text">See the predicted disease, confidence bar, disease description, other possible conditions, and all supporting health information in one view.</p>
+      </div>
+    </div>
+
+    <div class="tl-step">
+      <div class="tl-dot"><span>5</span></div>
+      <div class="tl-card">
+        <span class="tl-icon">💊</span>
+        <div class="tl-title">Follow Health Recommendations</div>
+        <p class="tl-text">Explore personalised suggestions: precautions to follow, medications, recommended diet plans, and workout routines for your condition.</p>
+      </div>
+    </div>
+
+    <div class="tl-step">
+      <div class="tl-dot"><span>6</span></div>
+      <div class="tl-card">
+        <span class="tl-icon">📁</span>
+        <div class="tl-title">Track Your History</div>
+        <p class="tl-text">Every search is saved to your account. Review past predictions from the sidebar to monitor your health patterns over time.</p>
+      </div>
+    </div>
+
+    <div class="tl-step">
+      <div class="tl-dot"><span>7</span></div>
+      <div class="tl-card">
+        <span class="tl-icon">👨‍⚕️</span>
+        <div class="tl-title">Consult a Doctor</div>
+        <p class="tl-text">Visit the Consultancy section to view specialist doctor profiles and know when to seek professional medical advice for your condition.</p>
+      </div>
+    </div>
+
+    <div class="tl-step">
+      <div class="tl-dot" style="background:#a32d2d;box-shadow:0 0 0 3px #f09595;">
+        <span>!</span>
+      </div>
+      <div class="tl-card danger">
+        <span class="tl-icon">⚠️</span>
+        <div class="tl-title">Important Disclaimer</div>
+        <p class="tl-text">CurePath provides AI-based health guidance only. It is <strong>not a substitute</strong> for professional medical diagnosis or treatment. Always consult a qualified doctor for serious health concerns.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FAQ -->
+  <div class="faq-section fade-up">
+    <h2>Frequently Asked Questions</h2>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        Is CurePath a replacement for a doctor?
+        <svg class="arrow" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="faq-a">No. CurePath is an AI-powered decision-support tool. It helps you understand possible conditions based on symptoms, but a qualified medical professional should always make final diagnoses and treatment decisions.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        How accurate are the predictions?
+        <svg class="arrow" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="faq-a">The model is trained on a curated medical symptom-disease dataset and achieves high accuracy. Each prediction comes with a confidence score. However, accuracy depends on how precisely you describe your symptoms.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        Is my health data private?
+        <svg class="arrow" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="faq-a">Yes. Your data is stored locally in a secure SQLite database and is only accessible to your account. We do not share personal health data with third parties.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        Can I use voice input?
+        <svg class="arrow" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="faq-a">Yes! Click the microphone icon in the chat box to speak your symptoms. Voice input works best in Chrome or Edge browsers. The system will transcribe your speech and analyse it automatically.</div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+function toggleFaq(el) {
+  const item = el.parentElement;
+  item.classList.toggle('open');
+}
+const obs = new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:0.08});
+document.querySelectorAll('.tl-step, .fade-up').forEach(el=>obs.observe(el));
+</script>
+{% endblock %}

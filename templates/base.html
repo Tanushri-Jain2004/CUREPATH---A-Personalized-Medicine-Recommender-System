@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CurePath</title>
+
+  <!-- Bootstrap (kept for page content compatibility) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Fonts matching chat.html -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ── Reset & base ── */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #f5f4ef;
+      color: #2c2c2a;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ── Topnav (exact match to chat.html) ── */
+    .topnav {
+      width: 100%;
+      background: #1D9E75;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      height: 56px;
+      flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 1px 12px rgba(4,52,44,0.12);
+    }
+
+    .topnav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .topnav-brand-icon {
+      width: 36px; height: 36px;
+      background: rgba(255,255,255,0.18);
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .topnav-brand-icon svg {
+      width: 20px; height: 20px;
+      stroke: #fff; fill: none; stroke-width: 2.2;
+    }
+
+    .topnav-brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .topnav-brand-text strong {
+      font-family: 'Playfair Display', serif;
+      font-size: 19px; font-weight: 600;
+      color: #fff; letter-spacing: 0.01em;
+    }
+
+    .topnav-brand-text span {
+      font-size: 10.5px;
+      color: rgba(255,255,255,0.72);
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .topnav-links {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .topnav-links a {
+      color: rgba(255,255,255,0.88);
+      text-decoration: none;
+      font-size: 13px; font-weight: 500;
+      padding: 7px 15px;
+      border-radius: 6px;
+      letter-spacing: 0.01em;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+
+    .topnav-links a:hover {
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+    }
+
+    .topnav-links a.active {
+      color: #fff;
+      background: rgba(255,255,255,0.22);
+    }
+
+    /* ── Mobile hamburger ── */
+    .nav-toggle {
+      display: none;
+      background: rgba(255,255,255,0.15);
+      border: none;
+      border-radius: 7px;
+      padding: 7px 9px;
+      cursor: pointer;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .nav-toggle span {
+      display: block;
+      width: 20px; height: 2px;
+      background: #fff;
+      border-radius: 2px;
+      transition: transform 0.25s, opacity 0.25s;
+    }
+
+    .nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-toggle.open span:nth-child(2) { opacity: 0; }
+    .nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    @media (max-width: 768px) {
+      .nav-toggle { display: flex; }
+      .topnav-links {
+        display: none;
+        position: absolute;
+        top: 56px; left: 0; right: 0;
+        background: #0F6E56;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 10px 16px 16px;
+        gap: 4px;
+        box-shadow: 0 8px 24px rgba(4,52,44,0.18);
+        z-index: 999;
+      }
+      .topnav-links.open { display: flex; }
+      .topnav-links a { padding: 10px 14px; border-radius: 8px; font-size: 14px; }
+    }
+
+    /* ── Page content wrapper ── */
+    .page-content {
+      flex: 1;
+    }
+
+    /* ── Footer ── */
+    .site-footer {
+      background: #04342C;
+      margin-top: auto;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .site-footer::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(159,225,203,0.4), transparent);
+    }
+
+    .footer-top {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px 28px 18px;
+      display: grid;
+      grid-template-columns: 1.8fr 1fr 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .footer-brand-col {}
+
+    .footer-brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      text-decoration: none;
+    }
+
+    .footer-brand-logo-icon {
+      width: 28px; height: 28px;
+      background: rgba(29,158,117,0.25);
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .footer-brand-logo-icon svg {
+      width: 15px; height: 15px;
+      stroke: #9FE1CB; fill: none; stroke-width: 2.2;
+    }
+
+    .footer-brand-logo strong {
+      font-family: 'Playfair Display', serif;
+      font-size: 15px; font-weight: 600;
+      color: #fff; letter-spacing: 0.01em;
+    }
+
+    .footer-tagline {
+      font-size: 11.5px;
+      color: rgba(255,255,255,0.45);
+      line-height: 1.6;
+      max-width: 220px;
+      margin-bottom: 12px;
+    }
+
+    .footer-disclaimer {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 10.5px;
+      color: rgba(255,255,255,0.4);
+      line-height: 1.4;
+    }
+
+    .footer-col-title {
+      font-size: 10px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .footer-col-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .footer-col-links a {
+      font-size: 12px;
+      color: rgba(255,255,255,0.55);
+      text-decoration: none;
+      transition: color 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .footer-col-links a:hover { color: #9FE1CB; }
+
+    .footer-col-links a::before {
+      content: '';
+      width: 4px; height: 4px;
+      background: rgba(159,225,203,0.4);
+      border-radius: 50%;
+      flex-shrink: 0;
+      transition: background 0.15s;
+    }
+
+    .footer-col-links a:hover::before { background: #9FE1CB; }
+
+    .footer-team {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .footer-team-member {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .footer-team-avatar {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      background: rgba(29,158,117,0.2);
+      border: 1px solid rgba(159,225,203,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700;
+      color: #9FE1CB; flex-shrink: 0;
+    }
+
+    .footer-team-name {
+      font-size: 12px;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.07);
+      padding: 10px 28px;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .footer-copy {
+      font-size: 11px;
+      color: rgba(255,255,255,0.3);
+    }
+
+    .footer-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11.5px;
+      color: rgba(255,255,255,0.3);
+    }
+
+    .footer-badge svg {
+      width: 12px; height: 12px;
+      stroke: rgba(159,225,203,0.5); fill: none; stroke-width: 2;
+    }
+
+    @media (max-width: 900px) {
+      .footer-top {
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        padding: 20px 20px 16px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .footer-top { grid-template-columns: 1fr; gap: 16px; padding: 16px 16px 12px; }
+      .footer-bottom { flex-direction: column; text-align: center; padding: 8px 16px; }
+    }
+
+    /* ── Profile dropdown ── */
+    .nav-profile-wrap { position: relative; }
+
+    .nav-profile-trigger {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.13);
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: 24px; padding: 4px 12px 4px 4px;
+      cursor: pointer; transition: background 0.15s, box-shadow 0.15s;
+      font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.92);
+    }
+    .nav-profile-trigger:hover { background: rgba(255,255,255,0.22); box-shadow: 0 0 0 3px rgba(255,255,255,0.1); }
+
+    .nav-profile-avatar {
+      width: 30px; height: 30px; border-radius: 50%;
+      overflow: hidden; flex-shrink: 0;
+      background: linear-gradient(135deg,#1D9E75,#085041);
+      border: 2px solid rgba(159,225,203,0.5);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 800; color: #fff;
+      box-shadow: 0 2px 8px rgba(4,52,44,0.3);
+    }
+    .nav-profile-avatar img { width:100%;height:100%;object-fit:cover;border-radius:50%; }
+
+    .nav-profile-arrow {
+      width: 13px; height: 13px;
+      stroke: rgba(255,255,255,0.6); fill: none; stroke-width: 2.5;
+      transition: transform 0.2s;
+    }
+    .nav-profile-wrap.open .nav-profile-arrow { transform: rotate(180deg); }
+
+    .nav-profile-dropdown {
+      display: none; position: absolute;
+      top: calc(100% + 12px); right: 0;
+      width: 260px; background: #fff;
+      border: 1px solid #e8e6df; border-radius: 18px;
+      box-shadow: 0 20px 60px rgba(4,52,44,0.18), 0 4px 16px rgba(0,0,0,0.06);
+      z-index: 500; overflow: hidden;
+    }
+    .nav-profile-wrap.open .nav-profile-dropdown { display: block; animation: dropIn 0.2s cubic-bezier(0.34,1.56,0.64,1); }
+    @keyframes dropIn { from{opacity:0;transform:translateY(-10px) scale(0.96);} to{opacity:1;transform:translateY(0) scale(1);} }
+
+    /* Gradient header */
+    .nav-dd-header {
+      background: linear-gradient(135deg, #04342C 0%, #0F6E56 100%);
+      padding: 20px 18px 16px;
+      display: flex; align-items: center; gap: 13px;
+      position: relative; overflow: hidden;
+    }
+    .nav-dd-header::before {
+      content:''; position:absolute; top:-30px; right:-30px;
+      width:100px; height:100px;
+      background:rgba(255,255,255,0.05); border-radius:50%;
+    }
+    .nav-dd-avatar {
+      width: 48px; height: 48px; border-radius: 50%;
+      overflow: hidden; flex-shrink: 0;
+      background: linear-gradient(135deg,#1D9E75,#085041);
+      border: 2.5px solid rgba(159,225,203,0.5);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 800; color: #fff;
+      box-shadow: 0 4px 12px rgba(4,52,44,0.3);
+      position: relative; z-index: 1;
+    }
+    .nav-dd-avatar img { width:100%;height:100%;object-fit:cover;border-radius:50%; }
+    .nav-dd-info { position: relative; z-index: 1; }
+    .nav-dd-name { font-size: 14px; font-weight: 700; color: #fff; letter-spacing:0.01em; }
+    .nav-dd-username { font-size: 11.5px; color: rgba(255,255,255,0.55); margin-top: 2px; }
+    .nav-dd-badge {
+      margin-top:6px; display:inline-flex; align-items:center; gap:4px;
+      background:rgba(29,158,117,0.3); border:1px solid rgba(159,225,203,0.3);
+      border-radius:10px; padding:2px 8px;
+      font-size:10.5px; font-weight:600; color:rgba(255,255,255,0.8);
+    }
+    .nav-dd-badge svg { width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:2; }
+
+    /* Menu items */
+    .nav-dd-menu { padding: 8px 0; }
+
+    .nav-dd-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 18px; font-size: 13px; font-weight: 500;
+      color: #3c3c3a; text-decoration: none;
+      transition: background 0.12s, color 0.12s;
+      position: relative;
+    }
+    .nav-dd-item:hover { background: #f5f4ef; color: #04342C; }
+    .nav-dd-item-icon {
+      width: 30px; height: 30px; border-radius: 8px;
+      background: #f5f4ef; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: background 0.12s;
+    }
+    .nav-dd-item:hover .nav-dd-item-icon { background: #E1F5EE; }
+    .nav-dd-item-icon svg { width:14px;height:14px;stroke:#888780;fill:none;stroke-width:2; }
+    .nav-dd-item:hover .nav-dd-item-icon svg { stroke: #0F6E56; }
+
+    .nav-dd-item.danger { color: #a32d2d; }
+    .nav-dd-item.danger .nav-dd-item-icon { background: #fff0f0; }
+    .nav-dd-item.danger .nav-dd-item-icon svg { stroke: #e24b4a; }
+    .nav-dd-item.danger:hover { background: #fff5f5; }
+    .nav-dd-item.danger:hover .nav-dd-item-icon { background: #ffe4e4; }
+
+    .nav-dd-divider { height: 1px; background: linear-gradient(90deg,transparent,#e8e6df,transparent); margin: 6px 0; }
+
+    .nav-dd-item-label { flex: 1; }
+    .nav-dd-item-sub { font-size: 11px; color: #b4b2a9; margin-top: 0px; font-weight: 400; }
+
+
+  </style>
+</head>
+
+<body>
+
+  <!-- ── Navbar ── -->
+  <nav class="topnav" id="topnav">
+
+    <a href="/" class="topnav-brand">
+      <div class="topnav-brand-icon">
+        <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      </div>
+      <div class="topnav-brand-text">
+        <strong>CurePath</strong>
+        <span>AI Health Assistant</span>
+      </div>
+    </a>
+
+    <!-- Mobile toggle -->
+    <button class="nav-toggle" id="nav-toggle" onclick="toggleNav()" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+
+    <div class="topnav-links" id="topnav-links">
+      <a href="/"          class="nav-link-item">Home</a>
+      <a href="/about"     class="nav-link-item">About Us</a>
+      <a href="/blog"      class="nav-link-item">Blog</a>
+      <a href="/contact"   class="nav-link-item">Contact Us</a>
+      <a href="/guideline" class="nav-link-item">Guidelines</a>
+      <a href="/history"   class="nav-link-item">History</a>
+      <a href="/book_consultation" class="nav-link-item">Consultancy</a>
+
+      {% if session.get('user') %}
+      {% set _user = current_user %}
+      <div class="nav-profile-wrap" id="nav-profile-wrap">
+        <button class="nav-profile-trigger" onclick="toggleProfileDrop(event)">
+          <div class="nav-profile-avatar" id="nav-avatar">
+            {% if current_user and current_user.photo %}
+              <img src="/static/profile_photos/{{ current_user.photo }}" alt="">
+            {% else %}
+              {{ session['user'][:2].upper() }}
+            {% endif %}
+          </div>
+          {{ session['user'].title() }}
+          <svg class="nav-profile-arrow" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+
+        <div class="nav-profile-dropdown" id="nav-profile-dropdown">
+
+          <!-- Gradient header -->
+          <div class="nav-dd-header">
+            <div class="nav-dd-avatar">
+              {% if current_user and current_user.photo %}
+                <img src="/static/profile_photos/{{ current_user.photo }}" alt="">
+              {% else %}
+                {{ session['user'][:2].upper() }}
+              {% endif %}
+            </div>
+            <div class="nav-dd-info">
+              <div class="nav-dd-name">{{ (current_user.name if current_user and current_user.name else session['user']).title() }}</div>
+              <div class="nav-dd-username">@{{ session['user'] }}</div>
+              <div class="nav-dd-badge">
+                <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                CurePath Member
+              </div>
+            </div>
+          </div>
+
+          <!-- Menu items -->
+          <div class="nav-dd-menu">
+            <a href="/profile" class="nav-dd-item">
+              <div class="nav-dd-item-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+              <div class="nav-dd-item-label">
+                View Profile
+                <div class="nav-dd-item-sub">See your details & photo</div>
+              </div>
+            </a>
+            <a href="/profile/edit" class="nav-dd-item">
+              <div class="nav-dd-item-icon"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
+              <div class="nav-dd-item-label">
+                Edit Profile
+                <div class="nav-dd-item-sub">Update your information</div>
+              </div>
+            </a>
+            <a href="/history" class="nav-dd-item">
+              <div class="nav-dd-item-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+              <div class="nav-dd-item-label">
+                My History
+                <div class="nav-dd-item-sub">Past symptom searches</div>
+              </div>
+            </a>
+            <div class="nav-dd-divider"></div>
+            <a href="/logout" class="nav-dd-item danger">
+              <div class="nav-dd-item-icon"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>
+              <div class="nav-dd-item-label">
+                Logout
+                <div class="nav-dd-item-sub">Sign out of your account</div>
+              </div>
+            </a>
+          </div>
+
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+  </nav>
+
+  <!-- ── Page content ── -->
+  <div class="page-content">
+    {% block content %}{% endblock %}
+  </div>
+
+  <!-- ── Footer ── -->
+  <footer class="site-footer">
+
+    <div class="footer-top">
+
+      <!-- Brand col -->
+      <div class="footer-brand-col">
+        <a href="/" class="footer-brand-logo">
+          <div class="footer-brand-logo-icon">
+            <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          </div>
+          <strong>CurePath</strong>
+        </a>
+        <p class="footer-tagline">
+          AI-powered symptom analysis and disease prediction — making healthcare more accessible for everyone.
+        </p>
+        <div class="footer-disclaimer">
+          ⚕️ For informational use only. Not a substitute for medical advice.
+        </div>
+      </div>
+
+      <!-- Quick links -->
+      <div>
+        <div class="footer-col-title">Quick Links</div>
+        <ul class="footer-col-links">
+          <li><a href="/">Home</a></li>
+          <li><a href="/about">About Us</a></li>
+          <li><a href="/blog">Blog</a></li>
+          <li><a href="/history">My History</a></li>
+        </ul>
+      </div>
+
+      <!-- Support -->
+      <div>
+        <div class="footer-col-title">Support</div>
+        <ul class="footer-col-links">
+          <li><a href="/guideline">Guidelines</a></li>
+          <li><a href="/developer">Consultancy</a></li>
+          <li><a href="/contact">Contact Us</a></li>
+        </ul>
+      </div>
+
+      <!-- Team -->
+      <div>
+        <div class="footer-col-title">Our Team</div>
+        <div class="footer-team">
+          <div class="footer-team-member">
+            <div class="footer-team-avatar">HJ</div>
+            <span class="footer-team-name">Hridyanshi Jain</span>
+          </div>
+          <div class="footer-team-member">
+            <div class="footer-team-avatar">TJ</div>
+            <span class="footer-team-name">Tanushri Jain</span>
+          </div>
+          <div class="footer-team-member">
+            <div class="footer-team-avatar">KS</div>
+            <span class="footer-team-name">Kunal Sharma</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="footer-bottom">
+      <span class="footer-copy">&copy; 2025 CurePath AI. All rights reserved.</span>
+      <span class="footer-badge">
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Built with care for better health
+      </span>
+    </div>
+
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // ── Mobile nav toggle ──────────────────────────────────────────────────
+    function toggleNav() {
+      const links  = document.getElementById('topnav-links');
+      const toggle = document.getElementById('nav-toggle');
+      links.classList.toggle('open');
+      toggle.classList.toggle('open');
+    }
+
+    // Close nav when a link is clicked (mobile)
+    document.querySelectorAll('.nav-link-item').forEach(a => {
+      a.addEventListener('click', () => {
+        document.getElementById('topnav-links').classList.remove('open');
+        document.getElementById('nav-toggle').classList.remove('open');
+      });
+    });
+
+    // ── Active link highlight ──────────────────────────────────────────────
+    (function() {
+      const path  = window.location.pathname;
+      const links = document.querySelectorAll('.nav-link-item');
+      links.forEach(a => {
+        const href = a.getAttribute('href');
+        if (href === '/' ? path === '/' : path.startsWith(href)) {
+          a.classList.add('active');
+        }
+      });
+    })();
+
+    // ── Profile dropdown ────────────────────────────────────────────────────
+    function toggleProfileDrop(e) {
+      e.stopPropagation();
+      document.getElementById('nav-profile-wrap').classList.toggle('open');
+    }
+    document.addEventListener('click', () => {
+      const w = document.getElementById('nav-profile-wrap');
+      if (w) w.classList.remove('open');
+    });
+  </script>
+
+
+</body>
+</html>

@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --t50:#E1F5EE;--t100:#9FE1CB;--t400:#1D9E75;--t600:#0F6E56;--t800:#085041;--t900:#04342C;
+  --font-d:'Playfair Display',serif; --font-b:'DM Sans',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;}
+body{font-family:var(--font-b);background:#f5f4ef;color:#2c2c2a;margin:0;}
+
+.page-wrap{max-width:1100px;margin:0 auto;padding:48px 24px 80px;}
+
+/* ── Hero ── */
+.hero{text-align:center;padding:56px 24px 48px;background:linear-gradient(160deg,var(--t900) 0%,var(--t600) 100%);border-radius:20px;margin-bottom:48px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-60px;right:-60px;width:240px;height:240px;background:rgba(29,158,117,0.18);border-radius:50%;}
+.hero::after{content:'';position:absolute;bottom:-40px;left:-40px;width:160px;height:160px;background:rgba(29,158,117,0.12);border-radius:50%;}
+.hero-icon{width:64px;height:64px;background:rgba(255,255,255,0.12);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;position:relative;z-index:1;}
+.hero-icon svg{width:32px;height:32px;stroke:#fff;fill:none;stroke-width:1.8;}
+.hero h1{font-family:var(--font-d);font-size:clamp(28px,4vw,42px);font-weight:700;color:#fff;margin-bottom:12px;position:relative;z-index:1;}
+.hero p{font-size:16px;color:rgba(255,255,255,0.72);max-width:560px;margin:0 auto;line-height:1.7;position:relative;z-index:1;}
+
+/* ── Intro card ── */
+.intro-card{background:#fff;border:1px solid #e8e6df;border-radius:16px;padding:32px 36px;margin-bottom:40px;border-left:4px solid var(--t400);}
+.intro-card p{font-size:15px;line-height:1.8;color:#3c3c3a;margin-bottom:12px;}
+.intro-card p:last-child{margin-bottom:0;}
+
+/* ── Features grid ── */
+.section-label{font-size:11px;font-weight:700;color:#888780;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:20px;}
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-bottom:40px;}
+.feature-card{background:#fff;border:1px solid #e8e6df;border-radius:14px;padding:24px 26px;transition:transform 0.2s,box-shadow 0.2s;}
+.feature-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(4,52,44,0.08);}
+.feature-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;font-size:22px;}
+.feature-icon.green{background:var(--t50);}
+.feature-icon.teal{background:#E1F5EE;}
+.feature-card h3{font-family:var(--font-d);font-size:17px;font-weight:600;color:#04342C;margin-bottom:8px;}
+.feature-card p{font-size:13.5px;color:#5f5e5a;line-height:1.65;margin:0;}
+
+/* ── How it works ── */
+.how-card{background:#fff;border:1px solid #e8e6df;border-radius:16px;padding:32px 36px;margin-bottom:40px;}
+.how-card h2{font-family:var(--font-d);font-size:22px;color:#04342C;margin-bottom:24px;font-weight:600;}
+.steps-list{display:flex;flex-direction:column;gap:14px;}
+.step-item{display:flex;align-items:flex-start;gap:16px;}
+.step-num{width:32px;height:32px;background:var(--t600);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;margin-top:2px;}
+.step-text{font-size:14.5px;color:#3c3c3a;line-height:1.6;padding-top:5px;}
+
+/* ── Vision ── */
+.vision-card{background:linear-gradient(135deg,var(--t900),var(--t600));border-radius:16px;padding:40px 36px;text-align:center;}
+.vision-card h2{font-family:var(--font-d);font-size:24px;color:#fff;margin-bottom:12px;font-weight:600;}
+.vision-card p{font-size:15px;color:rgba(255,255,255,0.78);line-height:1.75;max-width:600px;margin:0 auto;}
+
+/* ── Fade in ── */
+.fade-up{opacity:0;transform:translateY(24px);transition:opacity 0.6s ease,transform 0.6s ease;}
+.fade-up.visible{opacity:1;transform:translateY(0);}
+</style>
+
+<div class="page-wrap">
+
+  <!-- Hero -->
+  <div class="hero fade-up">
+    <div class="hero-icon">
+      <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+    </div>
+    <h1>About CurePath</h1>
+    <p>Smart AI-powered healthcare assistant for early disease prediction and personalised care</p>
+  </div>
+
+  <!-- Intro -->
+  <div class="intro-card fade-up">
+    <p><strong>CurePath</strong> is an intelligent healthcare web application designed to assist users in identifying potential diseases based on their symptoms. Using machine learning algorithms, the system provides accurate predictions along with personalised recommendations including precautions, diet plans, and workout routines.</p>
+    <p>Our goal is to make healthcare more accessible, faster, and smarter by integrating <strong>Artificial Intelligence</strong> into everyday health monitoring — putting the power of early detection in everyone's hands.</p>
+  </div>
+
+  <!-- Features -->
+  <div class="fade-up">
+    <div class="section-label">What we offer</div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon green">🤖</div>
+        <h3>AI Prediction</h3>
+        <p>Predict diseases instantly based on selected symptoms using trained machine learning models with confidence scores.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon teal">📊</div>
+        <h3>Personalised Advice</h3>
+        <p>Get customised precautions, diets, and workouts tailored specifically to your predicted condition.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon green">📁</div>
+        <h3>History Tracking</h3>
+        <p>Store and review your previous predictions for better long-term health monitoring and trend awareness.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon teal">🎙️</div>
+        <h3>Voice Assistant</h3>
+        <p>Use the built-in voice assistant to describe symptoms hands-free and receive spoken health guidance.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon green">💊</div>
+        <h3>Medication Info</h3>
+        <p>Receive medication suggestions and dietary recommendations specific to each predicted disease.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon teal">👨‍⚕️</div>
+        <h3>Doctor Profiles</h3>
+        <p>Browse specialist doctor profiles and know when to escalate to professional medical care.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- How it works -->
+  <div class="how-card fade-up">
+    <h2>⚙️ How It Works</h2>
+    <div class="steps-list">
+      <div class="step-item"><div class="step-num">1</div><div class="step-text">Describe your symptoms in the chat box or use voice input</div></div>
+      <div class="step-item"><div class="step-num">2</div><div class="step-text">Our AI model analyses the symptom data in real time</div></div>
+      <div class="step-item"><div class="step-num">3</div><div class="step-text">The system predicts the most probable disease with a confidence score</div></div>
+      <div class="step-item"><div class="step-num">4</div><div class="step-text">Receive detailed recommendations — precautions, medications, diet & workout</div></div>
+      <div class="step-item"><div class="step-num">5</div><div class="step-text">Review your history anytime to track health patterns over time</div></div>
+    </div>
+  </div>
+
+  <!-- Vision -->
+  <div class="vision-card fade-up">
+    <h2>🌍 Our Vision</h2>
+    <p>To revolutionise healthcare by making AI-driven diagnosis accessible to everyone — ensuring early detection, better treatment outcomes, and a healthier world for all.</p>
+  </div>
+
+</div>
+
+<script>
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, {threshold:0.1});
+document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+</script>
+{% endblock %}

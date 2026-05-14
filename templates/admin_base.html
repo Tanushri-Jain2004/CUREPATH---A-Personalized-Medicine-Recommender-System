@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>{% block title %}Admin{% endblock %} — CurePath Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --t50:#E1F5EE;--t100:#9FE1CB;--t400:#1D9E75;--t600:#0F6E56;--t800:#085041;--t900:#04342C;
+  --sidebar:240px;--font-d:'Playfair Display',serif;--font-b:'DM Sans',sans-serif;
+  --bg:#f4f5f7;--card:#fff;--border:#e8e6df;--text:#2c2c2a;--muted:#888780;
+}
+body{font-family:var(--font-b);background:var(--bg);color:var(--text);display:flex;min-height:100vh;}
+
+/* ── Sidebar ── */
+.admin-sidebar{
+  width:var(--sidebar);min-width:var(--sidebar);background:var(--t900);
+  display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;
+  z-index:100;overflow:hidden;
+}
+.admin-sidebar::before{
+  content:'';position:absolute;top:-60px;right:-60px;
+  width:180px;height:180px;background:rgba(29,158,117,0.1);border-radius:50%;
+}
+
+.sb-brand{
+  padding:20px 20px 16px;display:flex;align-items:center;gap:10px;
+  border-bottom:1px solid rgba(255,255,255,0.07);position:relative;z-index:1;
+}
+.sb-brand-icon{
+  width:34px;height:34px;background:var(--t400);border-radius:9px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.sb-brand-icon svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2.2;}
+.sb-brand-text strong{display:block;font-family:var(--font-d);font-size:15px;color:#fff;font-weight:600;}
+.sb-brand-text span{font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:0.08em;text-transform:uppercase;}
+
+.sb-section{padding:16px 12px 6px;font-size:9.5px;font-weight:700;color:rgba(255,255,255,0.25);letter-spacing:0.12em;text-transform:uppercase;}
+
+.sb-nav{flex:1;padding:0 10px;overflow-y:auto;}
+.sb-nav::-webkit-scrollbar{width:3px;}
+.sb-nav::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:3px;}
+
+.sb-link{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 12px;border-radius:8px;
+  color:rgba(255,255,255,0.55);text-decoration:none;
+  font-size:13px;font-weight:500;margin-bottom:2px;
+  transition:background 0.15s,color 0.15s;
+}
+.sb-link:hover{background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.88);}
+.sb-link.active{background:rgba(29,158,117,0.2);color:#9FE1CB;}
+.sb-link svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0;}
+
+.sb-badge{
+  margin-left:auto;background:rgba(29,158,117,0.25);color:#9FE1CB;
+  font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;
+}
+
+.sb-footer{
+  padding:12px 16px;border-top:1px solid rgba(255,255,255,0.07);
+}
+.sb-logout{
+  display:flex;align-items:center;gap:8px;
+  color:rgba(255,100,100,0.7);text-decoration:none;font-size:13px;
+  font-weight:500;padding:8px 12px;border-radius:7px;
+  transition:background 0.15s,color 0.15s;
+}
+.sb-logout:hover{background:rgba(231,79,79,0.1);color:rgba(255,120,120,0.95);}
+.sb-logout svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;}
+
+/* ── Main area ── */
+.admin-main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+
+/* ── Top bar ── */
+.admin-topbar{
+  background:#fff;border-bottom:1px solid var(--border);
+  padding:14px 28px;display:flex;align-items:center;
+  justify-content:space-between;position:sticky;top:0;z-index:50;
+}
+.topbar-title{font-family:var(--font-d);font-size:18px;font-weight:700;color:var(--t900);}
+.topbar-right{display:flex;align-items:center;gap:12px;}
+.admin-badge{
+  display:flex;align-items:center;gap:7px;
+  background:var(--t50);border:1px solid var(--t100);
+  border-radius:20px;padding:5px 12px 5px 7px;
+  font-size:12.5px;font-weight:600;color:var(--t800);
+}
+.admin-badge-avatar{
+  width:22px;height:22px;background:var(--t600);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:700;color:#fff;
+}
+
+/* ── Content ── */
+.admin-content{flex:1;padding:28px;}
+
+/* ── Cards ── */
+.a-card{background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.a-card-header{
+  padding:14px 20px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.a-card-header h3{font-family:var(--font-d);font-size:15px;font-weight:600;color:var(--t900);}
+.a-card-body{padding:20px;}
+
+/* ── Stat cards ── */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px;}
+.stat{
+  background:#fff;border:1px solid var(--border);border-radius:12px;
+  padding:18px 20px;display:flex;align-items:flex-start;gap:14px;
+  transition:transform 0.2s,box-shadow 0.2s;
+}
+.stat:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(4,52,44,0.08);}
+.stat-icon{
+  width:40px;height:40px;border-radius:10px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:20px;
+}
+.stat-icon.green{background:var(--t50);}
+.stat-icon.blue{background:#E6F1FB;}
+.stat-icon.amber{background:#FAEEDA;}
+.stat-icon.coral{background:#FAECE7;}
+.stat-body .num{font-family:var(--font-d);font-size:26px;font-weight:700;color:var(--t900);line-height:1;}
+.stat-body .lbl{font-size:12px;color:var(--muted);margin-top:3px;font-weight:500;}
+
+/* ── Tables ── */
+.a-table{width:100%;border-collapse:collapse;}
+.a-table th{
+  font-size:11px;font-weight:700;color:var(--muted);
+  letter-spacing:0.07em;text-transform:uppercase;
+  padding:10px 14px;background:#faf9f6;
+  border-bottom:1px solid var(--border);text-align:left;
+}
+.a-table td{
+  padding:11px 14px;font-size:13.5px;color:var(--text);
+  border-bottom:1px solid #f5f4ef;vertical-align:middle;
+}
+.a-table tr:last-child td{border-bottom:none;}
+.a-table tr:hover td{background:#faf9f6;}
+.a-table .sub{font-size:12px;color:var(--muted);margin-top:2px;}
+
+/* ── Badges ── */
+.badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;}
+.badge-green{background:var(--t50);color:var(--t600);}
+.badge-blue{background:#E6F1FB;color:#185FA5;}
+.badge-amber{background:#FAEEDA;color:#854F0B;}
+.badge-red{background:#FCEBEB;color:#A32D2D;}
+.badge-gray{background:#F1EFE8;color:#5F5E5A;}
+
+/* ── Action buttons ── */
+.btn{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-b);font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:7px;border:none;cursor:pointer;text-decoration:none;transition:background 0.15s,transform 0.1s;}
+.btn:active{transform:scale(0.97);}
+.btn-primary{background:var(--t600);color:#fff;}
+.btn-primary:hover{background:var(--t800);}
+.btn-outline{background:#fff;color:var(--t600);border:1.5px solid var(--t100);}
+.btn-outline:hover{background:var(--t50);}
+.btn-danger{background:#fff;color:#a32d2d;border:1.5px solid #f09595;}
+.btn-danger:hover{background:#fff0f0;}
+.btn-sm{font-size:11.5px;padding:5px 11px;}
+.btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;}
+
+/* ── Search input ── */
+.search-wrap{position:relative;max-width:320px;}
+.search-wrap svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:14px;height:14px;stroke:var(--muted);fill:none;stroke-width:2;}
+.search-wrap input{width:100%;padding:8px 12px 8px 34px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--font-b);font-size:13px;color:var(--text);outline:none;background:#faf9f6;transition:border-color 0.2s;}
+.search-wrap input:focus{border-color:var(--t400);background:#fff;}
+.search-wrap input::placeholder{color:#b4b2a9;}
+
+/* ── Filter form ── */
+.filter-row{display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap;}
+
+/* ── Empty ── */
+.empty-row td{text-align:center;padding:32px;color:var(--muted);font-size:14px;}
+
+/* ── Symptom chips ── */
+.sym-chip{display:inline-block;background:var(--t50);border:1px solid var(--t100);color:var(--t800);font-size:11px;font-weight:500;padding:2px 8px;border-radius:12px;margin:2px 3px 2px 0;}
+
+/* ── Conf bar ── */
+.conf-bar-wrap{display:flex;align-items:center;gap:8px;min-width:120px;}
+.conf-bar-track{flex:1;height:5px;background:#e8e6df;border-radius:10px;overflow:hidden;}
+.conf-bar-fill{height:100%;border-radius:10px;}
+
+/* ── Modal ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(4,52,44,0.55);z-index:200;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:16px;padding:28px;max-width:520px;width:100%;margin:16px;box-shadow:0 24px 64px rgba(4,52,44,0.2);}
+.modal h3{font-family:var(--font-d);font-size:18px;color:var(--t900);margin-bottom:16px;}
+.modal-close{float:right;background:none;border:none;font-size:22px;color:var(--muted);cursor:pointer;margin-top:-4px;}
+.modal-field{margin-bottom:14px;}
+.modal-field label{display:block;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0.07em;text-transform:uppercase;margin-bottom:5px;}
+.modal-field p{font-size:14px;color:var(--text);line-height:1.65;background:#faf9f6;border:1px solid var(--border);border-radius:8px;padding:10px 14px;}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  .admin-sidebar{transform:translateX(-100%);transition:transform 0.3s;}
+  .admin-sidebar.open{transform:translateX(0);}
+  .admin-main{margin-left:0;}
+  .admin-content{padding:16px;}
+  .stats-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="admin-sidebar" id="admin-sidebar">
+  <div class="sb-brand">
+    <div class="sb-brand-icon">
+      <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+    </div>
+    <div class="sb-brand-text">
+      <strong>CurePath</strong>
+      <span>Admin Panel</span>
+    </div>
+  </div>
+
+  <div class="sb-section">Overview</div>
+  <nav class="sb-nav">
+    <a href="/admin/dashboard" class="sb-link {% if request.endpoint == 'admin_dashboard' %}active{% endif %}">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </a>
+
+    <div class="sb-section">Data Management</div>
+
+    <a href="/admin/users" class="sb-link {% if request.endpoint in ('admin_users','admin_user_searches') %}active{% endif %}">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Users
+    </a>
+
+    <a href="/admin/searches" class="sb-link {% if request.endpoint == 'admin_searches' %}active{% endif %}">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      Search History
+    </a>
+
+    <a href="/admin/contacts" class="sb-link {% if request.endpoint == 'admin_contacts' %}active{% endif %}">
+      <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      Contact Messages
+    </a>
+
+    <a href="/admin/consultations" class="sb-link {% if request.endpoint in ('admin_consultations',) %}active{% endif %}">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Consultations
+    </a>
+
+    <div class="sb-section">Site</div>
+
+    <a href="/" class="sb-link" target="_blank">
+      <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      View Website
+    </a>
+
+  </nav>
+
+  <div class="sb-footer">
+    <a href="/admin/logout" class="sb-logout">
+      <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Logout
+    </a>
+  </div>
+</aside>
+
+<!-- Main -->
+<div class="admin-main">
+  <div class="admin-topbar">
+    <span class="topbar-title">{% block page_title %}Dashboard{% endblock %}</span>
+    <div class="topbar-right">
+      <div class="admin-badge">
+        <div class="admin-badge-avatar">AD</div>
+        Admin
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-content">
+    {% block content %}{% endblock %}
+  </div>
+</div>
+
+</body>
+</html>

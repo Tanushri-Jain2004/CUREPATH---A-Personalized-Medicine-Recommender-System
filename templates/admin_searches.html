@@ -1,0 +1,84 @@
+{% extends "admin_base.html" %}
+{% block title %}Search History{% endblock %}
+{% block page_title %}Search History{% endblock %}
+
+{% block content %}
+<div class="a-card">
+  <div class="a-card-header">
+    <h3>🔍 All Searches <span class="badge badge-gray" style="margin-left:8px;">{{ searches|length }}</span></h3>
+    <form method="GET" class="filter-row" style="margin:0;">
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" name="q" value="{{ q }}" placeholder="Search user, disease, symptom…">
+      </div>
+      <button type="submit" class="btn btn-primary btn-sm">Search</button>
+      {% if q or user %}<a href="/admin/searches" class="btn btn-outline btn-sm">Clear</a>{% endif %}
+    </form>
+  </div>
+
+  {% if user %}
+  <div style="padding:10px 20px;background:var(--t50);border-bottom:1px solid var(--t100);font-size:13px;color:var(--t800);">
+    Showing searches for user: <strong>{{ user }}</strong>
+    &nbsp;·&nbsp; <a href="/admin/searches" style="color:var(--t600);">Show all</a>
+  </div>
+  {% endif %}
+
+  <table class="a-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>User</th>
+        <th>Symptoms Searched</th>
+        <th>Predicted Disease</th>
+        <th>Confidence</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for s in searches %}
+      <tr>
+        <td style="color:var(--muted);font-size:12px;">{{ s.id }}</td>
+        <td>
+          <a href="/admin/user_searches/{{ s.username }}"
+             style="color:var(--t600);font-weight:600;text-decoration:none;display:flex;align-items:center;gap:7px;">
+            <div style="width:26px;height:26px;border-radius:50%;background:var(--t50);border:1px solid var(--t100);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--t600);flex-shrink:0;">
+              {{ s.username[:2].upper() }}
+            </div>
+            {{ s.username }}
+          </a>
+        </td>
+        <td style="max-width:280px;">
+          {% for sym in s.symptoms.split(',') %}
+            <span class="sym-chip">{{ sym.strip().replace('_',' ').title() }}</span>
+          {% endfor %}
+        </td>
+        <td style="font-weight:600;color:var(--t900);">{{ s.prediction }}</td>
+        <td>
+          <div class="conf-bar-wrap">
+            <div class="conf-bar-track">
+              <div class="conf-bar-fill"
+                   style="width:{{ s.confidence }}%;
+                          background:{% if s.confidence >= 70 %}#1D9E75{% elif s.confidence >= 40 %}#EF9F27{% else %}#E24B4A{% endif %};">
+              </div>
+            </div>
+            <span class="badge {% if s.confidence >= 70 %}badge-green{% elif s.confidence >= 40 %}badge-amber{% else %}badge-red{% endif %}">
+              {{ s.confidence }}%
+            </span>
+          </div>
+        </td>
+        <td>
+          <form method="POST" action="/admin/searches/delete/{{ s.id }}" onsubmit="return confirm('Delete this search entry?');">
+            <button type="submit" class="btn btn-danger btn-sm">
+              <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+              Delete
+            </button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" style="text-align:center;color:var(--muted);padding:32px;">No searches found{% if q %} for "{{ q }}"{% endif %}.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

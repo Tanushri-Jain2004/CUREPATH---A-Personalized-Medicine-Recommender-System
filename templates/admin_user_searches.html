@@ -1,0 +1,123 @@
+{% extends "admin_base.html" %}
+{% block title %}{{ user.username }}'s Searches{% endblock %}
+{% block page_title %}{{ user.name or user.username }}'s Search History{% endblock %}
+
+{% block content %}
+
+<!-- User profile card -->
+<div class="a-card" style="margin-bottom:20px;">
+  <div class="a-card-body" style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+    <div style="width:56px;height:56px;border-radius:50%;background:var(--t50);border:2px solid var(--t100);display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:20px;font-weight:700;color:var(--t600);flex-shrink:0;">
+      {{ (user.name or user.username)[:2].upper() }}
+    </div>
+    <div style="flex:1;min-width:200px;">
+      <div style="font-family:var(--font-d);font-size:18px;font-weight:700;color:var(--t900);margin-bottom:4px;">{{ user.name or user.username }}</div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <span style="font-size:13px;color:var(--muted);">@{{ user.username }}</span>
+        {% if user.age %}<span style="font-size:13px;color:var(--muted);">Age: {{ user.age }}</span>{% endif %}
+        {% if user.gender %}<span class="badge badge-blue">{{ user.gender }}</span>{% endif %}
+        {% if user.address %}<span style="font-size:13px;color:var(--muted);">📍 {{ user.address }}</span>{% endif %}
+      </div>
+    </div>
+    <div style="text-align:center;">
+      <div style="font-family:var(--font-d);font-size:28px;font-weight:700;color:var(--t900);">{{ searches|length }}</div>
+      <div style="font-size:12px;color:var(--muted);font-weight:500;">Total Searches</div>
+    </div>
+    {% if searches %}
+    <div style="text-align:center;">
+      <div style="font-family:var(--font-d);font-size:28px;font-weight:700;color:var(--t900);">
+        {{ (searches|map(attribute='confidence')|sum / searches|length)|round(1) }}%
+      </div>
+      <div style="font-size:12px;color:var(--muted);font-weight:500;">Avg Confidence</div>
+    </div>
+    {% endif %}
+    <div style="display:flex;gap:8px;">
+      <a href="/admin/users" class="btn btn-outline btn-sm">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        Back to Users
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Searches table -->
+<div class="a-card">
+  <div class="a-card-header">
+    <h3>🔍 Symptom Searches by {{ user.username }}</h3>
+    <span class="badge badge-green">{{ searches|length }} records</span>
+  </div>
+
+  {% if searches %}
+  <table class="a-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Symptoms Searched</th>
+        <th>Predicted Disease</th>
+        <th>Confidence</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for s in searches %}
+      <tr>
+        <td style="color:var(--muted);font-size:12px;">{{ s.id }}</td>
+        <td style="max-width:320px;">
+          {% for sym in s.symptoms.split(',') %}
+            <span class="sym-chip">{{ sym.strip().replace('_',' ').title() }}</span>
+          {% endfor %}
+        </td>
+        <td>
+          <span style="font-weight:700;color:var(--t900);font-size:14px;">{{ s.prediction }}</span>
+        </td>
+        <td>
+          <div class="conf-bar-wrap">
+            <div class="conf-bar-track">
+              <div class="conf-bar-fill"
+                   style="width:{{ s.confidence }}%;
+                          background:{% if s.confidence >= 70 %}#1D9E75{% elif s.confidence >= 40 %}#EF9F27{% else %}#E24B4A{% endif %};">
+              </div>
+            </div>
+            <span class="badge {% if s.confidence >= 70 %}badge-green{% elif s.confidence >= 40 %}badge-amber{% else %}badge-red{% endif %}">
+              {{ s.confidence }}%
+            </span>
+          </div>
+        </td>
+        <td>
+          <form method="POST" action="/admin/searches/delete/{{ s.id }}" onsubmit="return confirm('Delete this entry?');">
+            <button type="submit" class="btn btn-danger btn-sm">
+              <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+              Delete
+            </button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- Summary: unique diseases -->
+  <div style="padding:16px 20px;border-top:1px solid var(--border);background:#faf9f6;">
+    <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;">Conditions Predicted for This User</div>
+    <div style="display:flex;flex-wrap:wrap;gap:7px;">
+      {% set seen = [] %}
+      {% for s in searches %}
+        {% if s.prediction not in seen %}
+          {% set _ = seen.append(s.prediction) %}
+          <span style="background:var(--t50);border:1px solid var(--t100);color:var(--t800);font-size:12px;font-weight:500;padding:4px 12px;border-radius:20px;">
+            {{ s.prediction }}
+          </span>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+  {% else %}
+  <div style="text-align:center;padding:48px;color:var(--muted);">
+    <div style="font-size:36px;margin-bottom:12px;">🔍</div>
+    <p style="font-size:14px;">{{ user.username }} hasn't made any searches yet.</p>
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--t50:#E1F5EE;--t100:#9FE1CB;--t400:#1D9E75;--t600:#0F6E56;--t800:#085041;--t900:#04342C;--font-d:'Playfair Display',serif;--font-b:'DM Sans',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font-b);background:#f5f4ef;color:#2c2c2a;}
+.page-wrap{max-width:760px;margin:0 auto;padding:40px 24px 80px;}
+
+/* ── Profile hero ── */
+.profile-hero{
+  background:linear-gradient(135deg,var(--t900) 0%,var(--t600) 100%);
+  border-radius:20px;padding:36px;margin-bottom:24px;
+  display:flex;align-items:center;gap:28px;flex-wrap:wrap;
+  position:relative;overflow:hidden;
+}
+.profile-hero::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:rgba(255,255,255,0.05);border-radius:50%;}
+
+/* ── Photo upload ── */
+.photo-wrap{position:relative;flex-shrink:0;cursor:pointer;}
+.photo-circle{
+  width:96px;height:96px;border-radius:50%;
+  border:3px solid rgba(255,255,255,0.3);
+  background:rgba(255,255,255,0.1);
+  overflow:hidden;display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-d);font-size:32px;font-weight:700;color:#9FE1CB;
+  position:relative;
+}
+.photo-circle img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.photo-overlay{
+  position:absolute;inset:0;border-radius:50%;
+  background:rgba(4,52,44,0.6);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  opacity:0;transition:opacity 0.2s;
+}
+.photo-wrap:hover .photo-overlay{opacity:1;}
+.photo-overlay svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2;margin-bottom:3px;}
+.photo-overlay span{font-size:10px;color:#fff;font-weight:600;}
+#photo-input{display:none;}
+
+.photo-badge{
+  position:absolute;bottom:2px;right:2px;
+  width:24px;height:24px;background:var(--t400);border-radius:50%;
+  border:2px solid rgba(255,255,255,0.3);
+  display:flex;align-items:center;justify-content:center;
+}
+.photo-badge svg{width:12px;height:12px;stroke:#fff;fill:none;stroke-width:2.5;}
+
+.upload-status{font-size:11.5px;color:rgba(255,255,255,0.6);margin-top:6px;text-align:center;min-height:16px;}
+
+/* ── Hero info ── */
+.hero-info{flex:1;z-index:1;}
+.hero-name{font-family:var(--font-d);font-size:clamp(20px,3vw,28px);font-weight:700;color:#fff;margin-bottom:4px;}
+.hero-username{font-size:13.5px;color:rgba(255,255,255,0.55);margin-bottom:14px;}
+.hero-stats{display:flex;gap:20px;flex-wrap:wrap;}
+.hero-stat{text-align:center;}
+.hero-stat .n{font-family:var(--font-d);font-size:22px;font-weight:700;color:#fff;line-height:1;}
+.hero-stat .l{font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px;font-weight:500;letter-spacing:0.04em;}
+.hero-edit-btn{
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);
+  color:#fff;text-decoration:none;font-family:var(--font-b);
+  font-size:13px;font-weight:600;padding:8px 18px;border-radius:8px;
+  margin-top:16px;transition:background 0.15s;
+}
+.hero-edit-btn:hover{background:rgba(255,255,255,0.25);}
+.hero-edit-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;}
+
+/* ── Info card ── */
+.info-card{background:#fff;border:1px solid #e8e6df;border-radius:16px;padding:24px 28px;margin-bottom:20px;}
+.info-card h2{font-family:var(--font-d);font-size:17px;font-weight:600;color:var(--t900);margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+.info-card h2 span{font-size:18px;}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 24px;}
+@media(max-width:500px){.info-grid{grid-template-columns:1fr;}}
+.info-field label{font-size:10.5px;font-weight:700;color:#b4b2a9;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;display:block;}
+.info-field p{font-size:14px;color:#2c2c2a;font-weight:500;padding:9px 12px;background:#faf9f6;border:1px solid #e8e6df;border-radius:8px;}
+
+/* ── Fade ── */
+.fu{opacity:0;transform:translateY(14px);transition:opacity 0.45s ease,transform 0.45s ease;}
+.fu.v{opacity:1;transform:translateY(0);}
+</style>
+
+<div class="page-wrap">
+
+  <!-- Hero -->
+  <div class="profile-hero fu">
+
+    <!-- Photo upload -->
+    <div class="photo-wrap" onclick="document.getElementById('photo-input').click()" title="Change profile photo">
+      <div class="photo-circle" id="photo-circle">
+        {% if user.photo %}
+          <img src="/static/profile_photos/{{ user.photo }}" alt="Profile" id="photo-img">
+        {% else %}
+          <span id="photo-initials">{{ (user.name or user.username)[:2].upper() }}</span>
+        {% endif %}
+        <div class="photo-overlay">
+          <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          <span>Change Photo</span>
+        </div>
+      </div>
+      <div class="photo-badge">
+        <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      </div>
+      <input type="file" id="photo-input" accept="image/*" onchange="uploadPhoto(this)">
+      <div class="upload-status" id="upload-status"></div>
+    </div>
+
+    <!-- Info -->
+    <div class="hero-info">
+      <div class="hero-name">{{ user.name or user.username }}</div>
+      <div class="hero-username">@{{ user.username }}{% if user.gender %} · {{ user.gender }}{% endif %}{% if user.age %} · {{ user.age }} yrs{% endif %}</div>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="n">{{ total_searches }}</div><div class="l">Searches</div></div>
+        <div class="hero-stat"><div class="n">{% if user.age %}{{ user.age }}{% else %}—{% endif %}</div><div class="l">Age</div></div>
+      </div>
+      <a href="/profile/edit" class="hero-edit-btn">
+        <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        Edit Profile
+      </a>
+    </div>
+  </div>
+
+  <!-- Details -->
+  <div class="info-card fu">
+    <h2><span>👤</span> Personal Details</h2>
+    <div class="info-grid">
+      <div class="info-field"><label>Full Name</label><p>{{ user.name or '—' }}</p></div>
+      <div class="info-field"><label>Username</label><p>@{{ user.username }}</p></div>
+      <div class="info-field"><label>Age</label><p>{{ user.age or '—' }}</p></div>
+      <div class="info-field"><label>Gender</label><p>{{ user.gender or '—' }}</p></div>
+      <div class="info-field" style="grid-column:1/-1;"><label>Address</label><p>{{ user.address or '—' }}</p></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function uploadPhoto(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const status = document.getElementById('upload-status');
+  status.textContent = 'Uploading…';
+
+  const formData = new FormData();
+  formData.append('photo', file);
+
+  fetch('/profile/upload_photo', { method: 'POST', body: formData })
+    .then(r => r.json())
+    .then(data => {
+      if (data.ok) {
+        status.textContent = '✓ Photo updated!';
+        // Preview new photo
+        const reader = new FileReader();
+        reader.onload = e => {
+          const circle = document.getElementById('photo-circle');
+          circle.innerHTML = `<img src="${e.target.result}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+            <div class="photo-overlay">
+              <svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2;margin-bottom:3px;"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              <span style="font-size:10px;color:#fff;font-weight:600;">Change Photo</span>
+            </div>`;
+          // Also update nav avatar
+          const navAv = document.getElementById('nav-avatar');
+          if (navAv) navAv.innerHTML = `<img src="${e.target.result}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+        };
+        reader.readAsDataURL(file);
+        setTimeout(() => status.textContent = '', 3000);
+      } else {
+        status.textContent = '✗ ' + (data.error || 'Upload failed');
+      }
+    })
+    .catch(() => { status.textContent = '✗ Upload failed'; });
+}
+
+window.addEventListener('load', () => {
+  const obs = new IntersectionObserver(e => e.forEach(x => { if(x.isIntersecting) x.target.classList.add('v'); }), {threshold:0.08});
+  document.querySelectorAll('.fu').forEach(el => obs.observe(el));
+});
+</script>
+{% endblock %}

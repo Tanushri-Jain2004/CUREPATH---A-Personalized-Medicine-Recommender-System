@@ -1,0 +1,145 @@
+{% extends "admin_base.html" %}
+{% block title %}{{ user.name or user.username }}'s Profile{% endblock %}
+{% block page_title %}User Profile{% endblock %}
+
+{% block content %}
+<!-- Profile card -->
+<div class="a-card" style="margin-bottom:20px;">
+  <div style="background:linear-gradient(135deg,#04342C,#0F6E56);padding:24px 28px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:-40px;right:-40px;width:140px;height:140px;background:rgba(255,255,255,0.05);border-radius:50%;"></div>
+
+    <!-- Avatar / Photo -->
+    <div style="width:72px;height:72px;border-radius:50%;overflow:hidden;border:3px solid rgba(159,225,203,0.4);flex-shrink:0;background:linear-gradient(135deg,#1D9E75,#085041);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:#fff;box-shadow:0 4px 16px rgba(4,52,44,0.3);">
+      {% if user.photo %}
+        <img src="/static/profile_photos/{{ user.photo }}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+      {% else %}
+        {{ (user.name or user.username)[:2].upper() }}
+      {% endif %}
+    </div>
+
+    <div style="flex:1;z-index:1;">
+      <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#fff;margin-bottom:4px;">{{ user.name or user.username }}</div>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center;">
+        <span style="font-size:13px;color:rgba(255,255,255,0.55);">@{{ user.username }}</span>
+        {% if user.age %}<span style="font-size:13px;color:rgba(255,255,255,0.55);">Age: {{ user.age }}</span>{% endif %}
+        {% if user.gender %}<span style="background:rgba(29,158,117,0.25);border:1px solid rgba(159,225,203,0.3);color:rgba(255,255,255,0.8);font-size:11px;font-weight:600;padding:2px 9px;border-radius:12px;">{{ user.gender }}</span>{% endif %}
+      </div>
+      {% if user.address %}<div style="font-size:12.5px;color:rgba(255,255,255,0.45);margin-top:5px;">📍 {{ user.address }}</div>{% endif %}
+    </div>
+
+    <!-- Stats -->
+    <div style="display:flex;gap:20px;z-index:1;">
+      <div style="text-align:center;">
+        <div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:#fff;line-height:1;">{{ searches|length }}</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.45);margin-top:2px;font-weight:500;">Searches</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:#fff;line-height:1;">{{ consultations|length }}</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.45);margin-top:2px;font-weight:500;">Consultations</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;z-index:1;">
+      <a href="/admin/users" class="btn btn-outline btn-sm" style="color:rgba(255,255,255,0.7);border-color:rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);">← Back</a>
+    </div>
+  </div>
+
+  <!-- User details table -->
+  <div class="a-card-body">
+    <table style="width:100%;border-collapse:collapse;">
+      <tr>
+        <td style="padding:8px 0;width:130px;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0.07em;text-transform:uppercase;">Full Name</td>
+        <td style="padding:8px 0;font-size:14px;font-weight:600;color:var(--text);">{{ user.name or '—' }}</td>
+        <td style="padding:8px 0;width:130px;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0.07em;text-transform:uppercase;">Username</td>
+        <td style="padding:8px 0;"><code style="background:#f5f4ef;padding:2px 8px;border-radius:5px;font-size:13px;">{{ user.username }}</code></td>
+      </tr>
+      <tr>
+        <td style="padding:8px 0;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0.07em;text-transform:uppercase;">Age</td>
+        <td style="padding:8px 0;font-size:14px;">{{ user.age or '—' }}</td>
+        <td style="padding:8px 0;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0.07em;text-transform:uppercase;">Gender</td>
+        <td style="padding:8px 0;font-size:14px;">{{ user.gender or '—' }}</td>
+      </tr>
+      <tr>
+        <td style="padding:8px 0;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0.07em;text-transform:uppercase;">Address</td>
+        <td colspan="3" style="padding:8px 0;font-size:14px;color:var(--text);">{{ user.address or '—' }}</td>
+      </tr>
+      <tr>
+        <td style="padding:8px 0;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0.07em;text-transform:uppercase;">Profile Photo</td>
+        <td colspan="3" style="padding:8px 0;">
+          {% if user.photo %}
+            <img src="/static/profile_photos/{{ user.photo }}" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid #9FE1CB;" alt="Profile">
+          {% else %}
+            <span style="font-size:13px;color:var(--muted);">No photo uploaded</span>
+          {% endif %}
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<!-- Search history -->
+<div class="a-card" style="margin-bottom:20px;">
+  <div class="a-card-header">
+    <h3>🔍 Search History <span class="badge badge-gray" style="margin-left:6px;">{{ searches|length }}</span></h3>
+  </div>
+  {% if searches %}
+  <table class="a-table">
+    <thead><tr><th>#</th><th>Symptoms</th><th>Predicted Disease</th><th>Confidence</th></tr></thead>
+    <tbody>
+      {% for s in searches %}
+      <tr>
+        <td style="color:var(--muted);font-size:12px;">{{ s.id }}</td>
+        <td style="max-width:300px;">
+          {% for sym in s.symptoms.split(',') %}
+            <span class="sym-chip">{{ sym.strip().replace('_',' ').title() }}</span>
+          {% endfor %}
+        </td>
+        <td style="font-weight:600;color:var(--t900);">{{ s.prediction }}</td>
+        <td>
+          <div class="conf-bar-wrap">
+            <div class="conf-bar-track">
+              <div class="conf-bar-fill" style="width:{{ s.confidence }}%;background:{% if s.confidence >= 70 %}#1D9E75{% elif s.confidence >= 40 %}#EF9F27{% else %}#E24B4A{% endif %};"></div>
+            </div>
+            <span class="badge {% if s.confidence >= 70 %}badge-green{% elif s.confidence >= 40 %}badge-amber{% else %}badge-red{% endif %}">{{ s.confidence }}%</span>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div style="text-align:center;padding:28px;color:var(--muted);font-size:14px;">No searches yet.</div>
+  {% endif %}
+</div>
+
+<!-- Consultations -->
+<div class="a-card">
+  <div class="a-card-header">
+    <h3>👨‍⚕️ Consultations <span class="badge badge-gray" style="margin-left:6px;">{{ consultations|length }}</span></h3>
+    <a href="/admin/consultations?user={{ user.username }}" class="btn btn-outline btn-sm">Manage</a>
+  </div>
+  {% if consultations %}
+  <table class="a-table">
+    <thead><tr><th>#</th><th>Doctor</th><th>Symptoms</th><th>Status</th><th>Report</th><th>Date</th></tr></thead>
+    <tbody>
+      {% for c in consultations %}
+      <tr>
+        <td style="color:var(--muted);font-size:12px;">{{ c.id }}</td>
+        <td style="font-size:13px;">{{ c.doctor_pref or '—' }}</td>
+        <td style="font-size:12.5px;color:var(--muted);max-width:200px;">{{ (c.symptoms or '')[:60] }}{% if c.symptoms and c.symptoms|length > 60 %}…{% endif %}</td>
+        <td><span class="badge {% if c.status=='Pending' %}badge-amber{% elif c.status=='Reviewed' %}badge-green{% else %}badge-blue{% endif %}">{{ c.status }}</span></td>
+        <td>
+          {% if c.report_file %}
+            <a href="/static/consultation_reports/{{ c.report_file }}" target="_blank" class="btn btn-outline btn-sm">View</a>
+          {% else %}<span style="font-size:12px;color:#b4b2a9;">None</span>{% endif %}
+        </td>
+        <td style="font-size:12px;color:var(--muted);">{{ c.submitted_at or '—' }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div style="text-align:center;padding:28px;color:var(--muted);font-size:14px;">No consultations yet.</div>
+  {% endif %}
+</div>
+{% endblock %}
